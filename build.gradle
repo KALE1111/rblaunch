@@ -1,0 +1,62 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'https://repo.runelite.net'
+    }
+    mavenCentral()
+}
+def runeLiteVersion = '1.10.3'
+
+dependencies {
+    compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testImplementation 'junit:junit:4.12'
+    testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
+    testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
+    implementation 'org.json:json:20230227'
+}
+sourceSets {
+
+    main {
+
+        java {
+            srcDir "src"
+
+        }
+
+    }
+}
+
+group = 'net.runelite.client.plugins'
+version = '4.9'
+sourceCompatibility = "11"
+
+task FatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'net.runelite.client.plugins.Main'
+    }
+    baseName = 'RuneBot'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude("com/example/hidden")
+    with jar
+}
+
+task FatJarWithHidden(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'net.runelite.client.plugins.Main'
+    }
+    baseName = 'RuneBot'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+targetCompatibility = JavaVersion.VERSION_11
