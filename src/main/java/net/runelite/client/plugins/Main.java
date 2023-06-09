@@ -33,7 +33,7 @@ public class Main {
                     file = args[0] + "/squashfs-root/config.json";
 
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, String.format("Error1 Occured: %s Contact Staff if that error makes no sense", e),
+                    JOptionPane.showMessageDialog(null, String.format("Unpack Error Occured: %s Contact Staff if that error makes no sense", e),
                             "Installer", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -96,7 +96,7 @@ public class Main {
 
         }
         catch(Exception e) {
-            JOptionPane.showMessageDialog(null, String.format("Error Occured2: %s Contact Staff if that error makes no sense",e),
+            JOptionPane.showMessageDialog(null, String.format("Dir Error Occured: %s Contact Staff if that error makes no sense",e),
                     "Installer", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -109,7 +109,7 @@ public class Main {
                 extractionProcess.waitFor();
             }
         }}catch(Exception e){
-            JOptionPane.showMessageDialog(null, String.format("Error Occured3: %s Contact Staff if that error makes no sense",e),
+            JOptionPane.showMessageDialog(null, String.format("Repack Error Occured: %s Contact Staff if that error makes no sense",e),
                     "Installer", JOptionPane.ERROR_MESSAGE);
         }
 
