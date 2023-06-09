@@ -33,7 +33,7 @@ sourceSets {
 }
 
 group = 'net.runelite.client.plugins'
-version = '0.0.2'
+version = '0.0.3'
 sourceCompatibility = "11"
 
 task FatJar(type: Jar) {

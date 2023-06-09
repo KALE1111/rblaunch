@@ -32,7 +32,7 @@ import net.runelite.client.eventbus.Subscribe;
 import javax.inject.Inject;
 
 @PluginDescriptor(
-	name = "Tombs of Amascut",
+	name = "Tombs of Amascut extended",
 	enabledByDefault = false,
 	description = "Overlays for Tombs",
 	tags = {"bosses", "combat", "overlay", "pve", "pvm", "tombs"}
