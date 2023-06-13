@@ -60,13 +60,14 @@ import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.apache.commons.lang3.ArrayUtils;
- /*
+import com.example.EthanApiPlugin.EthanApiPlugin;
+
 @PluginDescriptor(
-	name = "Vorkath",
+	name = "<html><font color=#86C43F>[RB]</font> Vorkath</html>",
 	enabledByDefault = false,
 	description = "Count vorkath attacks, indicate next phase, wooxwalk timer, indicate path through acid",
 	tags = {"combat", "overlay", "pve", "pvm", "ported", "vorkath", "blue", "dragon", "zombie"}
-)*///TODO remove when fixed
+)
 @Slf4j
 public class VorkathPlugin extends Plugin
 {
@@ -296,7 +297,7 @@ public class VorkathPlugin extends Plugin
 			return;
 		}
 
-		int currentAnimationID = 0;//ReflectionLibrary.getNpcAnimationId(vorkath.getVorkath());//TODO MORT animation ID Here
+		int currentAnimationID = EthanApiPlugin.getAnimation(vorkath.getVorkath());//ReflectionLibrary.getNpcAnimationId(vorkath.getVorkath());//TODO MORT animation ID Here
 
 		if (lastNPCAnim != currentAnimationID)
 		{
