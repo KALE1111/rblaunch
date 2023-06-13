@@ -23,6 +23,8 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import net.runelite.client.plugins.toa.reflectMeth;
 import net.runelite.client.plugins.toa.reflectPackMeth;
+import com.example.Packets.MousePackets;
+import com.example.Packets.WidgetPackets;
 
 @Slf4j
 public class Zebak extends Room {
@@ -120,59 +122,71 @@ public class Zebak extends Room {
         NextAttack.updateNextPrayerQueue(getNextAttackQueue());
 
         //Automation Happens Here
-		if(packet != null)
-		{
-			if ((packet.packetsInstalled && nextAttackQueue.peek() != null) && (false))//config.warning() && config.zebakprayFlick() && plugin.revs))
-			{
-				NextAttack attack = nextAttackQueue.peek();
-				if ((attack.getTicksUntil() <= 3 && !client.isPrayerActive(attack.getPrayer().getApiPrayer())) && client.getLocalPlayer().getAnimation() != 5538)
-				{// if 2t till next attack and not prayer correctly
-					String str = "";
-					if (attack.getPrayer() == Prayer.PROTECT_FROM_MELEE)
-					{
-						str = attack.getPrayer().getApiPrayer().name();
-						lastattack = attack;
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
-					}
-					if (attack.getPrayer() == Prayer.PROTECT_FROM_MAGIC)
-					{
-						str = attack.getPrayer().getApiPrayer().name();
-						lastattack = attack;
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+        //Automation Happens Here
+        if(true)
+        {
+            if ((nextAttackQueue.peek() != null) && (config.warning() && config.zebakprayFlick() && plugin.revs))
+            {
+                NextAttack attack = nextAttackQueue.peek();
+                if ((attack.getTicksUntil() <= config.tickstowait() && !client.isPrayerActive(attack.getPrayer().getApiPrayer())) && client.getLocalPlayer().getAnimation() != 5538)
+                {// if 2t till next attack and not prayer correctly
+                    String str = "";
+                    if (attack.getPrayer() == Prayer.PROTECT_FROM_MELEE)
+                    {
+                        str = attack.getPrayer().getApiPrayer().name();
+                        lastattack = attack;
+                        MousePackets.queueClickPacket();
+                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId(),-1,-1);
+                        //packet.toggleNormalPrayer();
+                    }
+                    if (attack.getPrayer() == Prayer.PROTECT_FROM_MAGIC)
+                    {
+                        str = attack.getPrayer().getApiPrayer().name();
+                        lastattack = attack;
+                        MousePackets.queueClickPacket();
+                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId(),-1,-1);
+                        //packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
 
-					}
-					if (attack.getPrayer() == Prayer.PROTECT_FROM_MISSILES)
-					{
-						str = attack.getPrayer().getApiPrayer().name();
-						lastattack = attack;
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
-					}
-					log.info(str);
-				}
-				else if ((attack.getTicksUntil() > 3 && client.isPrayerActive(lastattack.getPrayer().getApiPrayer()))&& false)
-				{//turns prayer off for flicking
-					String str = "";
-					if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MELEE)
-					{
-						str = attack.getPrayer().getApiPrayer().name();
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
-					}
-					if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MAGIC)
-					{
-						str = attack.getPrayer().getApiPrayer().name();
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+                    }
+                    if (attack.getPrayer() == Prayer.PROTECT_FROM_MISSILES)
+                    {
+                        str = attack.getPrayer().getApiPrayer().name();
+                        lastattack = attack;
+                        MousePackets.queueClickPacket();
+                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId(),-1,-1);
+                        //packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+                    }
+                    log.info(str);
+                }
+                else if ((attack.getTicksUntil() > config.tickstowait() && client.isPrayerActive(lastattack.getPrayer().getApiPrayer()))&& config.flickPrayer())
+                {//turns prayer off for flicking
+                    String str = "";
+                    if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MELEE)
+                    {
+                        str = attack.getPrayer().getApiPrayer().name();
+                        MousePackets.queueClickPacket();
+                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId(),-1,-1);
+                        //packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+                    }
+                    if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MAGIC)
+                    {
+                        str = attack.getPrayer().getApiPrayer().name();
+                        MousePackets.queueClickPacket();
+                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId(),-1,-1);
+                        //packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
 
-					}
-					if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MISSILES)
-					{
-						str = attack.getPrayer().getApiPrayer().name();
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
-					}
-					log.info(str);
-				}
-			}
-		}
-
+                    }
+                    if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MISSILES)
+                    {
+                        str = attack.getPrayer().getApiPrayer().name();
+                        MousePackets.queueClickPacket();
+                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId(),-1,-1);
+                        //packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+                    }
+                    log.info(str);
+                }
+            }
+        }
         for (NPC npc : client.getNpcs()){
             if (npc != null){
                 int decrease = (int)Math.floor(pathLevel/2);

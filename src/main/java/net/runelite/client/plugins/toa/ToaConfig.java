@@ -529,7 +529,7 @@ public interface ToaConfig extends Config
 	{
 		return new Color(255, 0, 0, 20);
 	}
-/*
+
 	@ConfigSection(
 		name = "TOA: Automation",
 		description = "",
@@ -538,23 +538,6 @@ public interface ToaConfig extends Config
 	)
 
 	String toaauto = "TOA: Automation";
-
-	public enum reflectChoices
-	{
-		SKYLERMINER,
-		ETHAN
-	}
-
-	@ConfigItem(
-		name = "Reflection Choice",
-		description = "Choose whose api you want to reflect with",
-		position = 0,
-		keyName = "choice"
-	)
-	default reflectChoices reflectchoice() {
-		return reflectChoices.SKYLERMINER;
-	}
-
 
 	@ConfigItem(
 		position = 0,
@@ -594,15 +577,7 @@ public interface ToaConfig extends Config
 
 	default boolean wardenprayFlick() { return false; }
 
-	@ConfigItem(
-		position = 2,
-		keyName = "PrayerSwitcher2",
-		name = "autoPraySwapAkkha",
-		description = "Automatically changes defensive prayers at Akkha",
-		section = toaauto
-	)
 
-	default boolean AkkhaprayFlick() { return false; }
 
 	@Range(
 		min = 1,
@@ -619,46 +594,6 @@ public interface ToaConfig extends Config
 	default int tickstowait() { return 2; }
 
 	@ConfigItem(
-		position = 5,
-		keyName = "mageItems",
-		name = "Mage Items to switch to",
-		description = "Put in a list of items such as \"113,223\" seperated by commas",
-		section = toaauto
-	)
-
-	default String mageItems() { return ""; }
-
-	@ConfigItem(
-		position = 6,
-		keyName = "meleeItems",
-		name = "Melee Items to switch to",
-		description = "Put in a list of items such as \"113,223\" seperated by commas",
-		section = toaauto
-	)
-
-	default String meleeItems() { return ""; }
-
-	@ConfigItem(
-		position = 7,
-		keyName = "rangeItems",
-		name = "Range Items to switch to",
-		description = "Put in a list of items such as \"113,223\" seperated by commas",
-		section = toaauto
-	)
-
-	default String rangeItems() { return ""; }
-
-	@ConfigItem(
-		position = 8,
-		keyName = "akkhaSwitch",
-		name = "AkkaitemSwitch",
-		description = "Switches items in akkha for you depending on akkha form",
-		section = toaauto
-	)
-
-	default boolean AkkhaSwitchItems() { return false; }
-
-	@ConfigItem(
 		position = 9,
 		keyName = "flickpray",
 		name = "FLicks Prayer off",
@@ -668,6 +603,6 @@ public interface ToaConfig extends Config
 
 	default boolean flickPrayer() { return false; }
 
-*/
+
 
 }

@@ -32,10 +32,10 @@ import net.runelite.client.eventbus.Subscribe;
 import javax.inject.Inject;
 
 @PluginDescriptor(
-	name = "Tombs of Amascut extended",
+	name = "<html><font color=#025B26>[RB]</font> Tombs of Amascut</html>",
 	enabledByDefault = false,
 	description = "Overlays for Tombs",
-	tags = {"bosses", "combat", "overlay", "pve", "pvm", "tombs"}
+	tags = {"bosses", "combat", "overlay", "pve", "pvm", "tombs", "RB"}
 )
 
 @Slf4j
@@ -112,25 +112,19 @@ public class ToaPlugin extends Plugin {
 	}
 
     @Override
-    public void startUp() {/*
-		if((config.reflectchoice() == ToaConfig.reflectChoices.SKYLERMINER) && packet == null){
-			packet = packetSM;
-		}
-		else if (packet == null){
-			packet = packetETHAN;
-		}
-        this.overlayManager.add(this.toaDebugBox);
+    public void startUp() {
+
         revs = true;
-		if(client.getRevision() != 213){
+		if(client.getRevision() != 214){
 			revs = false;
 			JCheckBox checkbox = new JCheckBox();
 			checkbox.setBackground(ColorScheme.LIGHT_GRAY_COLOR);
-			final int result = JOptionPane.showOptionDialog(checkbox, "REVS OUTDATED: Overlays Only",
+			final int result = JOptionPane.showOptionDialog(checkbox, "REVS OUTDATED: Overlays Only For TOA Plugin",
 				"REVS OUTDATED", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
 				null, new String[]{"I Understand", "What?"}, "No");
 		}
 
-    */
+
         if (rooms == null)
         {
             rooms = new Room[]{akkha, het, zebak, kephri, scarabas, baba, apmeken, warden};

@@ -29,61 +29,63 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import net.runelite.client.plugins.toa.reflectMeth;
 import net.runelite.client.plugins.toa.reflectPackMeth;
+import com.example.Packets.MousePackets;
+import com.example.Packets.WidgetPackets;
 
 
 @Slf4j
 public class Warden extends Room {
-    @Inject
-    private Client client;
+	@Inject
+	private Client client;
 
-    @Inject
-    private WardenOverlay WardenOverlay;
+	@Inject
+	private WardenOverlay WardenOverlay;
 
 	@Inject
 	private WardenOverlayBox WardenOverlayBox;
 
-    @Inject
-    private WardenPrayerOverlay WardenPrayerOverlay;
+	@Inject
+	private WardenPrayerOverlay WardenPrayerOverlay;
 
-    @Inject
-    private WardenPrayerBoxOverlay WardenPrayerBoxOverlay;
+	@Inject
+	private WardenPrayerBoxOverlay WardenPrayerBoxOverlay;
 
 
 
-    @Getter
-    private WardenPosition currentSide = WardenPosition.UNDEFINED;
+	@Getter
+	private WardenPosition currentSide = WardenPosition.UNDEFINED;
 
-    @Inject
-    protected Warden(ToaPlugin plugin, ToaConfig config)
+	@Inject
+	protected Warden(ToaPlugin plugin, ToaConfig config)
 	{
 		super(plugin, config);
 	}
 
 
-    @Getter(AccessLevel.PUBLIC)
-    Queue<NextAttack> nextAttackQueue = new PriorityQueue<>();
+	@Getter(AccessLevel.PUBLIC)
+	Queue<NextAttack> nextAttackQueue = new PriorityQueue<>();
 
-    @Getter(AccessLevel.PACKAGE)
-    private long lastTick;
+	@Getter(AccessLevel.PACKAGE)
+	private long lastTick;
 
-    @Override
-    public void init(){
+	@Override
+	public void init(){
 
 
-    }
+	}
 
-    private int timeTillNext = 0;
-    private int lastAnim;
+	private int timeTillNext = 0;
+	private int lastAnim;
 
 	private NextAttack lastattack = null;
 
-    private NPC wardenp2;
-    @Getter
+	private NPC wardenp2;
+	@Getter
 	private NPC wardenp3;
 	private NPC zebakGhost;
 
-    @Getter(AccessLevel.PACKAGE)
-    private final List<GameObject> objects = new ArrayList<>();
+	@Getter(AccessLevel.PACKAGE)
+	private final List<GameObject> objects = new ArrayList<>();
 
 	@Getter
 	private LinkedHashSet<WardenDangerTile> WardenDangerTiles = new LinkedHashSet<>();
@@ -95,23 +97,23 @@ public class Warden extends Room {
 		this.packet = type;
 	}
 
-    @Override
-    public void load()
-    {
-        overlayManager.add(WardenOverlay);
+	@Override
+	public void load()
+	{
+		overlayManager.add(WardenOverlay);
 		overlayManager.add(WardenOverlayBox);
-        overlayManager.add(WardenPrayerOverlay);
-        overlayManager.add(WardenPrayerBoxOverlay);
-    }
+		overlayManager.add(WardenPrayerOverlay);
+		overlayManager.add(WardenPrayerBoxOverlay);
+	}
 
-    @Override
-    public void unload()
-    {
-        overlayManager.remove(WardenOverlay);
+	@Override
+	public void unload()
+	{
+		overlayManager.remove(WardenOverlay);
 		overlayManager.remove(WardenOverlayBox);
-        overlayManager.remove(WardenPrayerOverlay);
-        overlayManager.remove(WardenPrayerBoxOverlay);
-    }
+		overlayManager.remove(WardenPrayerOverlay);
+		overlayManager.remove(WardenPrayerBoxOverlay);
+	}
 
 	@Subscribe
 	public void onGraphicsObjectCreated(GraphicsObjectCreated event){
@@ -137,14 +139,14 @@ public class Warden extends Room {
 	}
 
 
-    @Subscribe
-    public void onGameTick(GameTick event) {
-        if (!inRoomRegion(ToaPlugin.WARDEN_P1_REGION) || !inRoomRegion(ToaPlugin.WARDEN_P2_REGION)){
+	@Subscribe
+	public void onGameTick(GameTick event) {
+		if (!inRoomRegion(ToaPlugin.WARDEN_P1_REGION) || !inRoomRegion(ToaPlugin.WARDEN_P2_REGION)){
 			wardenp2 = null;//if no Npcs were found/set
 			wardenp3 = null;
 			zebakGhost = null;
-            return;
-        }//TODO make this work?
+			return;
+		}//TODO make this work?
 
 		LinkedHashSet<WardenDangerTile> tempTiles = new LinkedHashSet<>();
 		for (WardenDangerTile tile : WardenDangerTiles){
@@ -203,53 +205,65 @@ public class Warden extends Room {
 
 
 		//Automation Happens Here
-		if(packet != null)
+		if(true)
 		{
-			if ((packet.packetsInstalled && nextAttackQueue.peek() != null) && (false))//config.warning() && config.wardenprayFlick() && plugin.revs))
+			if ((nextAttackQueue.peek() != null) && (config.warning() && config.wardenprayFlick() && plugin.revs))
 			{
 				NextAttack attack = nextAttackQueue.peek();
-				if (attack.getTicksUntil() <= 3 && !client.isPrayerActive(attack.getPrayer().getApiPrayer())&& client.getLocalPlayer().getAnimation() != 5538)
+				if (attack.getTicksUntil() <= config.tickstowait() && !client.isPrayerActive(attack.getPrayer().getApiPrayer())&& client.getLocalPlayer().getAnimation() != 5538)
 				{// if 2t till next attack and not prayer correctly
 					String str = "";
 					if (attack.getPrayer() == Prayer.PROTECT_FROM_MELEE)
 					{
 						str = attack.getPrayer().getApiPrayer().name();
 						lastattack = attack;
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+						MousePackets.queueClickPacket();
+						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId(),-1,-1);
+						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
 					}
 					if (attack.getPrayer() == Prayer.PROTECT_FROM_MAGIC)
 					{
 						str = attack.getPrayer().getApiPrayer().name();
 						lastattack = attack;
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+						MousePackets.queueClickPacket();
+						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId(),-1,-1);
+						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
 
 					}
 					if (attack.getPrayer() == Prayer.PROTECT_FROM_MISSILES)
 					{
 						str = attack.getPrayer().getApiPrayer().name();
 						lastattack = attack;
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+						MousePackets.queueClickPacket();
+						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId(),-1,-1);
+						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
 					}
 					log.info(str);
 				}
-				else if ((attack.getTicksUntil() > 3 && client.isPrayerActive(lastattack.getPrayer().getApiPrayer())) && false)
+				else if ((attack.getTicksUntil() > config.tickstowait() && client.isPrayerActive(lastattack.getPrayer().getApiPrayer())) && config.flickPrayer())
 				{//turns prayer off for flicking
 					String str = "";
 					if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MELEE)
 					{
 						str = attack.getPrayer().getApiPrayer().name();
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+						MousePackets.queueClickPacket();
+						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId(),-1,-1);
+						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
 					}
 					if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MAGIC)
 					{
 						str = attack.getPrayer().getApiPrayer().name();
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+						MousePackets.queueClickPacket();
+						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId(),-1,-1);
+						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
 
 					}
 					if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MISSILES)
 					{
 						str = attack.getPrayer().getApiPrayer().name();
-						packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+						MousePackets.queueClickPacket();
+						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId(),-1,-1);
+						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
 					}
 					log.info(str);
 				}
@@ -258,7 +272,7 @@ public class Warden extends Room {
 
 
 		//wardenActive = true;
-        //Update attack queue
+		//Update attack queue
 		/*
         lastTick = System.currentTimeMillis();
         NextAttack.updateNextPrayerQueue(getNextAttackQueue());
@@ -279,16 +293,16 @@ public class Warden extends Room {
         if (canAttackTicks > 0)
             canAttackTicks = canAttackTicks - 1;
 */
-        //;
-    }
+		//;
+	}
 
 
 
 
 
-    private void WardenCheckForNewHit(boolean ZebakSpawned, boolean phase3, boolean phase2){
+	private void WardenCheckForNewHit(boolean ZebakSpawned, boolean phase3, boolean phase2){
 
-    	if(ZebakSpawned){
+		if(ZebakSpawned){
 			if (this.zebakGhost.getAnimation() == 9626){
 				for (Projectile p : client.getProjectiles()) {
 					//Check if new projectile spawned and 4 ticks or more
@@ -333,7 +347,7 @@ public class Warden extends Room {
 			timeTillNext--;
 		}
 
-        //P2 Logic for prayers
+		//P2 Logic for prayers
 		if(wardenp2 != null)
 		{
 			if ((wardenp2.getAnimation() == 9660 || wardenp2.getAnimation() == 9661))
@@ -382,5 +396,5 @@ public class Warden extends Room {
 				}
 			}
 		}
-    }
+	}
 }

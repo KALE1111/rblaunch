@@ -19,9 +19,9 @@ import javax.inject.Inject;
 import java.util.*;
 
 @PluginDescriptor(
-        name = "House Overlay",
+        name = "<html><font color=#025B26>[RB]</font> House Overlay</html>",
         description = "Overlays for your house.",
-        tags = {"imno","ported","house", "overlay", "poh"}
+        tags = {"imno","ported","house", "overlay", "poh", "RB"}
 )
 @Slf4j
 public class HouseOverlayPlugin extends Plugin

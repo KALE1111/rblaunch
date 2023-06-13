@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.*;
 
 @PluginDescriptor(
-        name = "Spoontob",
+        name = "<html><font color=#025B26>[RB]</font> Spoontob</html>",
         description = " useful 1 plugin",
         enabledByDefault = false
 )

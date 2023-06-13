@@ -34,10 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @PluginDescriptor(
-   name = "CoX Helper",
+   name = "<html><font color=#025B26>[RB]</font> CoX Helper</html>",
    enabledByDefault = false,
    description = "All-in-one plugin for Chambers of Xeric",
-   tags = {"CoX", "chamber", "xeric", "helper"}
+   tags = {"CoX", "chamber", "xeric", "helper","RB"}
 )
 public class CoxPlugin extends Plugin {
    private static final Logger log = LoggerFactory.getLogger(CoxPlugin.class);

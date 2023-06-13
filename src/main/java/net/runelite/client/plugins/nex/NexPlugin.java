@@ -49,10 +49,10 @@ import net.runelite.client.plugins.nex.timer.TickTimer;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 @PluginDescriptor(
-	name = "Nex Extended",
+	name = "<html><font color=#025B26>[RB]</font> Nex Extended</html>",
 	enabledByDefault = false,
 	description = "Show what prayer to use and which tiles to avoid",
-	tags = {"bosses", "combat", "nex", "gwd", "pvm","ported"}
+	tags = {"bosses", "combat", "nex", "gwd", "pvm","ported", "RB"}
 )
 
 @Slf4j
