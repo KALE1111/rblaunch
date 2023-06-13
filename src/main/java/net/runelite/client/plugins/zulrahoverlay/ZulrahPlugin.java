@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @PluginDescriptor(
-		name = "<html><font color=#025B26>[RB]</font> Zulrah</html>",
+		name = "<html><font color=#86C43F>[RB]</font> Zulrah</html>",
 		description = "All-in-One tool to help during the Zulrah fight",
 		tags = {"zulrah", "zul", "andra", "snakeling", "ported", "snake", "solomission", "RB"},
 		enabledByDefault = false

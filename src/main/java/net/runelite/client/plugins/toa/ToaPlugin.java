@@ -32,7 +32,7 @@ import net.runelite.client.eventbus.Subscribe;
 import javax.inject.Inject;
 
 @PluginDescriptor(
-	name = "<html><font color=#025B26>[RB]</font> Tombs of Amascut</html>",
+	name = "<html><font color=#86C43F>[RB]</font> Tombs of Amascut</html>",
 	enabledByDefault = false,
 	description = "Overlays for Tombs",
 	tags = {"bosses", "combat", "overlay", "pve", "pvm", "tombs", "RB"}

@@ -106,7 +106,7 @@ public class Xarpus extends Room {
 
     public void init() {
 		try {
-            AudioInputStream stream = AudioSystem.getAudioInputStream(new BufferedInputStream(SpoonTobPlugin.class.getResourceAsStream("/spoontob/sheesh.wav")));
+            AudioInputStream stream = AudioSystem.getAudioInputStream(new BufferedInputStream(SpoonTobPlugin.class.getResourceAsStream("sheesh.wav")));
             AudioFormat format = stream.getFormat();
             Info info = new Info(Clip.class, format);
             clip = (Clip)AudioSystem.getLine(info);
@@ -119,7 +119,7 @@ public class Xarpus extends Room {
             clip = null;
         }
         EXHUMED_COUNT_ICON = ImageUtil.resizeCanvas(ImageUtil.loadImageResource(AlternateSprites.class, AlternateSprites.POISON_HEART), 26, 26);
-        HEALED_COUNT_ICON = ImageUtil.resizeCanvas(ImageUtil.loadImageResource(SpoonTobPlugin.class, "/spoontob/healsplat.png"), 26, 26);
+        HEALED_COUNT_ICON = ImageUtil.resizeCanvas(ImageUtil.loadImageResource(SpoonTobPlugin.class, "healsplat.png"), 26, 26);
     }
 
     public void load() {

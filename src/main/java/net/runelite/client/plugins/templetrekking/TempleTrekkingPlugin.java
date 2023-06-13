@@ -41,7 +41,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 @PluginDescriptor(
-	name = "<html><font color=#025B26>[RB]</font> Temple Trekking</html>",
+	name = "<html><font color=#86C43F>[RB]</font> Temple Trekking</html>",
 	enabledByDefault = false,
 	description = "Helpers for the Temple Trek minigame",
 	tags = {"minigame", "overlay", "temple trek", "ported", "RB"}

@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import java.util.*;
 
 @PluginDescriptor(
-        name = "<html><font color=#025B26>[RB]</font> House Overlay</html>",
+        name = "<html><font color=#86C43F>[RB]</font> House Overlay</html>",
         description = "Overlays for your house.",
         tags = {"imno","ported","house", "overlay", "poh", "RB"}
 )

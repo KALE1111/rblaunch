@@ -5,6 +5,7 @@ import net.runelite.api.Point;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
+import net.runelite.client.plugins.zulrahoverlay.ZulrahPlugin;
 import net.runelite.client.util.Text;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -96,8 +97,8 @@ public class Sotetseg extends Room {
     }
 
     public void init() {
-        TACTICAL_NUKE_SHEET = ImageUtil.loadImageResource(SpoonTobPlugin.class, "/spoontob/nuke_spritesheet.png");
-        TACTICAL_NUKE_OVERHEAD = ImageUtil.loadImageResource(SpoonTobPlugin.class, "/spoontob/Tactical_Nuke_Care_Package_Icon_MW2.png");
+        TACTICAL_NUKE_SHEET = ImageUtil.loadImageResource(SpoonTobPlugin.class, "nuke_spritesheet.png");
+        TACTICAL_NUKE_OVERHEAD = ImageUtil.loadImageResource(SpoonTobPlugin.class, "Tactical_Nuke_Care_Package_Icon_MW2.png");
         TACTICAL_NUKE_SHEET_BLANK = new BufferedImage(TACTICAL_NUKE_SHEET.getWidth(), TACTICAL_NUKE_SHEET.getHeight(), TACTICAL_NUKE_SHEET.getType());
         Graphics2D graphics = TACTICAL_NUKE_SHEET_BLANK.createGraphics();
         graphics.setColor(new Color(0, 0, 0, 0));
@@ -105,7 +106,7 @@ public class Sotetseg extends Room {
         graphics.dispose();
 
         try {
-            AudioInputStream stream = AudioSystem.getAudioInputStream(new BufferedInputStream(SpoonTobPlugin.class.getResourceAsStream("/spoontob/mw2_tactical_nuke.wav")));
+            AudioInputStream stream = AudioSystem.getAudioInputStream(new BufferedInputStream(SpoonTobPlugin.class.getResourceAsStream("mw2_tactical_nuke.wav")));
             AudioFormat format = stream.getFormat();
             Info info = new Info(Clip.class, format);
             clip = (Clip)AudioSystem.getLine(info);

@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @PluginDescriptor(
-   name = "<html><font color=#025B26>[RB]</font> CoX Helper</html>",
+   name = "<html><font color=#86C43F>[RB]</font> CoX Helper</html>",
    enabledByDefault = false,
    description = "All-in-one plugin for Chambers of Xeric",
    tags = {"CoX", "chamber", "xeric", "helper","RB"}
