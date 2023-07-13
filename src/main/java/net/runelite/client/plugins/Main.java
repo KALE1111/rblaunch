@@ -8,11 +8,42 @@ import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+
 
 public class Main {
+
+    private static void downloadUsingNIO(String urlStr, String file) throws IOException {
+        URL url = new URL(urlStr);
+        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        fos.close();
+        rbc.close();
+    }
     public static void main(String[] args) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream("RuneBotInstaller.jar");
         String file = "config.json";
+
+        String path = System.getProperty("user.home");
+        if(System.getProperty("os.name").contains("Windows")){
+            File HOME = new File(path +"\\.runelite\\sideloaded-plugins");
+            if(!HOME.exists()){
+                Files.createDirectories(Paths.get(path+"\\.runelite\\sideloaded-plugins"));
+            }
+            boolean download = true;
+            for(File jars : HOME.listFiles()){
+                if(jars.getName().contains("RuneBot")){
+                    download = false;
+                }
+            }
+            if(download){
+                downloadUsingNIO("https://github.com/KALE1111/rblaunch/releases/download/v0.1.0/RuneBot-0.1.0.jar", System.getProperty("user.home")+"\\.runelite\\sideloaded-plugins\\RuneBot-0.1.0.jar");
+            }
+
+        }
         if(args.length != 0) {
             if (args[0].contains("help")) {
                 System.out.println("RuneBot-VERSION.jar When ran without args assumes default download dir\n when ran with a arg assumes path to donwload DIR\n  Runebot.jar FILEPATH");
@@ -113,7 +144,7 @@ public class Main {
                     "Installer", JOptionPane.ERROR_MESSAGE);
         }
 
-        JOptionPane.showMessageDialog(null, "Installed successfully, Please place this .jar in .runelite/sideloaded-plugins",
+        JOptionPane.showMessageDialog(null, "Installed successfully, Please launch runelite normally",
                 "Installer", JOptionPane.PLAIN_MESSAGE);
         System.exit(1);
     }

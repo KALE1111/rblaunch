@@ -5,12 +5,18 @@ plugins {
 
 repositories {
     mavenLocal()
+    maven {url = 'https://repo.runelite.net/'}
     maven {
-        url = 'https://repo.runelite.net'
+
+        url = 'https://maven.pkg.github.com/SkylerPIlot/RBEVPmvn'
+        credentials {
+            username = System.getenv("USERNAME")
+            password = System.getenv("TOKEN")
+        }
     }
     mavenCentral()
 }
-def runeLiteVersion = '1.10.3'
+def runeLiteVersion = 'latest.release'
 
 dependencies {
     compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
@@ -20,8 +26,12 @@ dependencies {
     testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
     testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
     implementation 'org.json:json:20230227'
-    compileOnly group: 'com.example', name: 'RBAPI', version: '0.0.1+'
-    runtimeOnly group: 'com.example', name: 'RBAPI', version: '0.0.1+'
+
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+
+    compileOnly group: 'com.example', name: 'rbapi', version: '0.0.3+'
+    runtimeOnly group: 'com.example', name: 'rbapi', version: '0.0.3+'
+    testImplementation group: 'com.example', name: 'rbapi', version: '0.0.3+'
 }
 sourceSets {
 
@@ -36,7 +46,7 @@ sourceSets {
 }
 
 group = 'net.runelite.client.plugins'
-version = '0.0.4'
+version = '0.1.1'
 sourceCompatibility = "11"
 
 publishing {
