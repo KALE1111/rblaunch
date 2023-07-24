@@ -5,6 +5,7 @@ import org.json.JSONTokener;
 
 import javax.swing.*;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -12,9 +13,31 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 
-
 public class Main {
+    private static String getLatestVersion(String latestUrl){
+        try {
+            URL url = new URL(latestUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("HEAD"); // Use HEAD request to minimize data transfer
 
+            int responseCode = connection.getResponseCode();
+            if (responseCode == connection.HTTP_OK) {
+                // Get the redirected URL without downloading the entire response
+                String redirectedUrl = connection.getURL().toString();
+                String version = redirectedUrl.split("v")[1];
+                return version;
+            } else {
+                System.out.println("HTTP GET request failed with response code: " + responseCode);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+    private static String getLatestVersionURL(String version) {
+        if (version == "") throw new IllegalArgumentException("Version cannot be empty");
+        return String.format("https://github.com/KALE1111/rblaunch/releases/download/v%s/RuneBot-%s.jar", version,version);
+    }
     private static void downloadUsingNIO(String urlStr, String file) throws IOException {
         URL url = new URL(urlStr);
         ReadableByteChannel rbc = Channels.newChannel(url.openStream());
@@ -40,10 +63,14 @@ public class Main {
                 }
             }
             if(download){
-                downloadUsingNIO("https://github.com/KALE1111/rblaunch/releases/download/v0.1.6/RuneBot-0.1.6.jar", System.getProperty("user.home")+"\\.runelite\\sideloaded-plugins\\RuneBot-0.1.0.jar");
+                String latestversion = getLatestVersion("https://github.com/KALE1111/rblaunch/latest");
+                String latesturl = getLatestVersionURL(latestversion);
+                downloadUsingNIO(latesturl, String.format("%s\\.runelite\\sideloaded-plugins\\RuneBot-%s.jar", System.getProperty("user.home"), latestversion));
             }
-
         }
+
+
+
         if(args.length != 0) {
             if (args[0].contains("help")) {
                 System.out.println("RuneBot-VERSION.jar When ran without args assumes default download dir\n when ran with a arg assumes path to donwload DIR\n  Runebot.jar FILEPATH");
@@ -155,6 +182,4 @@ public class Main {
                 || OS.indexOf("nux") >= 0
                 || OS.indexOf("aix") > 0);
     }
-
-
 }
