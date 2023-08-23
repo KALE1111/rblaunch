@@ -115,7 +115,7 @@ public class ToaPlugin extends Plugin {
     public void startUp() {
 
         revs = true;
-		if(client.getRevision() != 215){
+		if(client.getRevision() != 216){
 			revs = false;
 			JCheckBox checkbox = new JCheckBox();
 			checkbox.setBackground(ColorScheme.LIGHT_GRAY_COLOR);
