@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.ChinBreakHandler;
 
+import com.example.EthanApiPlugin.Collections.Widgets;
 import net.runelite.client.plugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
 import net.runelite.client.plugins.ChinBreakHandler.util.IntRandomNumberGenerator;
 import com.example.EthanApiPlugin.EthanApiPlugin;
@@ -316,11 +317,10 @@ public class ChinBreakHandlerPlugin extends Plugin {
                             client.setUsername(finalUsername);
                             client.setPassword(finalPassword);
 
-                            // client.setGameState(GameState.LOGGING_IN);
-
                             sendKey(KeyEvent.VK_ENTER);
                             sendKey(KeyEvent.VK_ENTER);
                             sendKey(KeyEvent.VK_ENTER);
+                            client.setGameState(GameState.LOGGING_IN);
                         }
                 );
 
@@ -401,6 +401,14 @@ public class ChinBreakHandlerPlugin extends Plugin {
 
             Widget logoutButton = client.getWidget(182, 8);
             Widget logoutDoorButton = client.getWidget(69, 23);
+            Optional<Widget> widget = Widgets.search().withId(4522009).first();
+            if (widget.isPresent()) {
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueWidgetActionPacket(1, 4522009, -1, -1);
+            } else {
+                MousePackets.queueClickPacket();
+                WidgetPackets.queueWidgetActionPacket(1, 11927560, -1, -1);
+            }
 
             if (logoutButton != null || logoutDoorButton != null)
             {
