@@ -25,10 +25,6 @@ public class DisableRenderCallbacks implements DrawCallbacks {
 
     }
 
-    @Override
-    public boolean drawFace(Model model, int face) {
-        return false;
-    }
 
     @Override
     public void drawScene(int cameraX, int cameraY, int cameraZ, int cameraPitch, int cameraYaw, int plane) {

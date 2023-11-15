@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.gauntletHelp;
 
+//import com.example.EthanApiPlugin.Collections.Equipment;
 import com.example.EthanApiPlugin.Collections.Equipment;
 import com.example.EthanApiPlugin.Collections.Inventory;
 import com.example.EthanApiPlugin.Collections.query.QuickPrayer;
@@ -100,7 +101,7 @@ public class gauntletFlicker extends Plugin {
             WidgetPackets.queueWidgetActionPacket(1, 5046276, -1, 12); //quickPrayer magic
         }
         if (hunllef != null) {
-            if (EthanApiPlugin.getHeadIcon(hunllef) == HeadIcon.MAGIC && (!name.contains("bow") && !name.contains("halberd"))) {
+         if (EthanApiPlugin.getHeadIcon(hunllef) == HeadIcon.MAGIC && (!name.contains("bow") && !name.contains("halberd"))) {
                 Optional<Widget> bow = Inventory.search().matchesWildCardNoCase("*bow*").first();
                 Optional<Widget> halberd = Inventory.search().matchesWildCardNoCase("*halberd*").first();
                 if (bow.isPresent()) {
@@ -122,7 +123,7 @@ public class gauntletFlicker extends Plugin {
                     updatedWeapon = "halberd";
                 }
             }
-            if (EthanApiPlugin.getHeadIcon(hunllef) == HeadIcon.MELEE && (!name.contains("staff") && !name.contains("bow"))) {
+/*            if (EthanApiPlugin.getHeadIcon(hunllef) == HeadIcon.MELEE && (!name.contains("staff") && !name.contains("bow"))) {
                 Optional<Widget> staff = Inventory.search().matchesWildCardNoCase("*staff*").first();
                 Optional<Widget> bow = Inventory.search().matchesWildCardNoCase("*bow*").first();
                 if (staff.isPresent()) {
@@ -132,7 +133,7 @@ public class gauntletFlicker extends Plugin {
                     InventoryInteraction.useItem(bow.get(),"Equip", "Wear", "Wield");
                     updatedWeapon = "bow";
                 }
-            }
+            }*/
             String weaponTesting = updatedWeapon.isEmpty() ? name : updatedWeapon;
             if (weaponTesting.contains("bow")) {
                 if (rigourUnlocked() && !EthanApiPlugin.isQuickPrayerActive(QuickPrayer.RIGOUR)) {

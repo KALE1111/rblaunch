@@ -1,4 +1,4 @@
-package net.runelite.client.plugins;
+/*package net.runelite.client.plugins;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -40,7 +40,7 @@ public class Main {
                 }
             }
             if(download){
-                downloadUsingNIO("https://github.com/KALE1111/rblaunch/releases/download/v0.2.3/RuneBot-0.2.3.jar", System.getProperty("user.home")+"\\.runelite\\sideloaded-plugins\\RuneBot-0.2.3.jar");
+                downloadUsingNIO("https://github.com/KALE1111/rblaunch/releases/download/v0.3.2/RuneBot-0.3.2.jar", System.getProperty("user.home")+"\\.runelite\\sideloaded-plugins\\RuneBot-0.3.2.jar");
             }
 
         }
@@ -158,3 +158,4 @@ public class Main {
 
 
 }
+*/

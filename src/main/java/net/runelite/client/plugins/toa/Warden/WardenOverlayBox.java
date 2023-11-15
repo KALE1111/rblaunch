@@ -1,6 +1,8 @@
 package net.runelite.client.plugins.toa.Warden;
 
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.client.plugins.toa.RaidRoom;
+import net.runelite.client.plugins.toa.RaidStateTracker;
 import net.runelite.client.plugins.toa.ToaConfig;
 import net.runelite.client.plugins.toa.RoomOverlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -18,6 +20,8 @@ public class WardenOverlayBox extends RoomOverlay {
 
     private final Warden plugin;
 
+    @Inject RaidStateTracker tracker;
+
     @Inject
     protected WardenOverlayBox(ToaConfig config, ModelOutlineRenderer outliner, Warden plugin) {
         super(config, outliner);
@@ -30,7 +34,7 @@ public class WardenOverlayBox extends RoomOverlay {
     @Override
     public Dimension render(Graphics2D graphics) {
 
-        if(plugin.getWardenp3() != null)
+        if(plugin.getWardenp3() != null && tracker.getCurrentState().getCurrentRoom() != RaidRoom.TOMB)
 		{//TODO add config option
 			this.panelComponent.getChildren().clear();
 			this.panelComponent.getChildren().add(LineComponent.builder().left("Safe Side:").right(plugin.getCurrentSide().getText()).build());

@@ -60,10 +60,12 @@ public class OneClickSandstonePlugin extends Plugin {
     @Inject
     private Client client;
 
+    private SpecialMenuOptionClicked currEntry;
+
     @Inject
     private OneClickSandstoneConfig config;
 
-    private SpecialMenuOptionClicked currEntry;
+
 
     @Provides
     OneClickSandstoneConfig getConfig(ConfigManager configManager)
