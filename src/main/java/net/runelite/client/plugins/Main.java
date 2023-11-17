@@ -1,4 +1,4 @@
-/*package net.runelite.client.plugins;
+package net.runelite.client.plugins;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -158,4 +158,3 @@ public class Main {
 
 
 }
-*/
