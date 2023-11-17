@@ -91,6 +91,8 @@ public class AzEasyScapePlugin extends Plugin {
 	private int skillifwait4 = 0;
 	private int skillifwait5 = 0;
 
+	private boolean lcon = false;
+
 	private boolean socketMsgRecieved = false;
 
 	private boolean shiftOsKeyPressed = false;
@@ -177,6 +179,15 @@ public class AzEasyScapePlugin extends Plugin {
 				if (!ArrayUtils.contains(safe, i))
 					event.consume();
 			}
+
+			if (AzEasyScapePlugin.this.config.lcHotkey().matches(event) && AzEasyScapePlugin.this.config.lcHotkey() != Keybind.NOT_SET) {
+				AzEasyScapePlugin.this.lcon = true;
+				int i = event.getKeyCode();
+				int[] safe = { 16, 18, 157 };
+				if (!ArrayUtils.contains(safe, i))
+					event.consume();
+			}
+
 			if (AzEasyScapePlugin.this.config.camKey().matches(event) && AzEasyScapePlugin.this.config.camKey() != Keybind.NOT_SET) {
 				if (AzEasyScapePlugin.this.client.getOculusOrbState() == 0) {
 					AzEasyScapePlugin.this.client.setOculusOrbState(1);
@@ -208,6 +219,14 @@ public class AzEasyScapePlugin extends Plugin {
 				if (!ArrayUtils.contains(safe, i))
 					event.consume();
 			}
+
+			if (AzEasyScapePlugin.this.config.lcHotkey().matches(event) && AzEasyScapePlugin.this.config.lcHotkey() != Keybind.NOT_SET) {
+				AzEasyScapePlugin.this.lcon = true;
+				int i = event.getKeyCode();
+				int[] safe = { 16, 18, 157 };
+				if (!ArrayUtils.contains(safe, i))
+					event.consume();
+			}
 			if (AzEasyScapePlugin.this.config.camKey().matches(event) && AzEasyScapePlugin.this.config.camKey() != Keybind.NOT_SET) {
 				int i = event.getKeyCode();
 				int[] safe = { 16, 18, 157 };
@@ -224,8 +243,17 @@ public class AzEasyScapePlugin extends Plugin {
 				if (!ArrayUtils.contains(safe, i))
 					e.consume();
 			}
+
 			if (AzEasyScapePlugin.this.config.shiftOsHotkey().matches(e) && AzEasyScapePlugin.this.config.shiftOsHotkey() != Keybind.NOT_SET) {
 				AzEasyScapePlugin.this.shiftOsKeyPressed = false;
+				int i = e.getKeyCode();
+				int[] safe = { 16, 18, 157 };
+				if (!ArrayUtils.contains(safe, i))
+					e.consume();
+			}
+
+			if (AzEasyScapePlugin.this.config.lcHotkey().matches(e) && AzEasyScapePlugin.this.config.lcHotkey() != Keybind.NOT_SET) {
+				AzEasyScapePlugin.this.lcon = false;
 				int i = e.getKeyCode();
 				int[] safe = { 16, 18, 157 };
 				if (!ArrayUtils.contains(safe, i))
@@ -497,7 +525,7 @@ public class AzEasyScapePlugin extends Plugin {
 			this.client.setMenuEntries(entries);
 		}
 		fixHorn();
-		if (this.client.getGameState() == GameState.LOGGED_IN && this.inGameBit == 1 && this.baRole == 4) {
+/*		if (this.client.getGameState() == GameState.LOGGED_IN && this.inGameBit == 1 && this.baRole == 4) {
 			List<MenuEntry> smallNyloEntries = new ArrayList<>();
 			List<MenuEntry> restEntries = new ArrayList<>();
 			for (MenuEntry ent : this.client.getMenuEntries()) {
@@ -517,7 +545,7 @@ public class AzEasyScapePlugin extends Plugin {
 			}
 			List<MenuEntry> newEntries = (List<MenuEntry>)Stream.concat(restEntries.stream(), smallNyloEntries.stream()).collect(Collectors.toList());
 			this.client.setMenuEntries(newEntries.<MenuEntry>toArray(new MenuEntry[0]));
-		}
+		}*/
 		if (this.client.getGameState() == GameState.LOGGED_IN && this.config.collhelp() && this.baRole == 2 && this.inGameBit == 1 &&
 			(this.client.getWidget(486, this.config.listenWidget()).getText() != null || !CollectorCall.equals(""))) {
 
@@ -737,22 +765,24 @@ public class AzEasyScapePlugin extends Plugin {
 			this.client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "set meat back to 1001", "");
 			//TODO figure out a fix here e.set(1001);
 		}
-		if(e.getMenuTarget().contains("Penance Healer")){
-			e.consume();
-			//System.out.println("Found");
-			Optional<NPC> healer = NPCs.search().nameContains("Penance Healer").filter(npc -> npc.getIndex() == e.getId()).first();
-			System.out.println(healer.get());
-			if(healer.isPresent()){
-				System.out.println("Found idx");
-				MousePackets.queueClickPacket();
-				Widget listenWid = this.client.getWidget(488, this.config.listenWidget());
-				String bacall = listenWid.getText().toLowerCase();
-				Optional<Widget> food = Inventory.search().nameContains(bacall.split(" ")[1]).first();
-				if(food.isPresent()){
+		if(config.lcAllwaysOn() || lcon) {
+			if (e.getMenuTarget().contains("Penance Healer")) {
+				e.consume();
+				//System.out.println("Found");
+				Optional<NPC> healer = NPCs.search().nameContains("Penance Healer").filter(npc -> npc.getIndex() == e.getId()).first();
+				System.out.println(healer.get());
+				if (healer.isPresent()) {
+					System.out.println("Found idx");
 					MousePackets.queueClickPacket();
-					NPCPackets.queueWidgetOnNPC(healer.get(),food.get());
-				}
+					Widget listenWid = this.client.getWidget(488, this.config.listenWidget());
+					String bacall = listenWid.getText().toLowerCase();
+					Optional<Widget> food = Inventory.search().nameContains(bacall.split(" ")[1]).first();
+					if (food.isPresent()) {
+						MousePackets.queueClickPacket();
+						NPCPackets.queueWidgetOnNPC(healer.get(), food.get());
+					}
 
+				}
 			}
 		}
 

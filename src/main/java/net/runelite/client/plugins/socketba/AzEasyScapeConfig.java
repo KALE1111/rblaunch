@@ -91,6 +91,16 @@ public interface AzEasyScapeConfig extends Config {
 		return Keybind.NOT_SET;
 	}
 
+	@ConfigItem(position = 20, keyName = "hotkeylc", name = "leftclick heal hotkey", description = "")
+	default Keybind lcHotkey() {
+		return Keybind.NOT_SET;
+	}
+
+	@ConfigItem(position = 21, keyName = "lcon", name = "leftclick heal always on", description = "Please ask for usage instructions")
+	default boolean lcAllwaysOn() {
+		return false;
+	}
+
 	@ConfigItem(position = 18, keyName = "spoofwalkunder", name = "<html><font color=#ff0000>Dc spoofer", description = "Will set you gamestate to dc")
 	default boolean spoof() {
 		return false;
