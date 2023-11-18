@@ -179,7 +179,6 @@ public class AzEasyScapePlugin extends Plugin {
 				if (!ArrayUtils.contains(safe, i))
 					event.consume();
 			}
-
 			if (AzEasyScapePlugin.this.config.lcHotkey().matches(event) && AzEasyScapePlugin.this.config.lcHotkey() != Keybind.NOT_SET) {
 				AzEasyScapePlugin.this.lcon = true;
 				int i = event.getKeyCode();
@@ -290,6 +289,23 @@ public class AzEasyScapePlugin extends Plugin {
 		AttackerCall = "";
 		CollectorCall = "";
 		DefenderCall = "";
+
+		 walkHerehotKeyPressed = false;
+
+		 skillifwait = 0;
+		 skillifwait1 = 0;
+		 skillifwait2 = 0;
+		 skillifwait3 = 0;
+		 skillifwait4 = 0;
+		 skillifwait5 = 0;
+
+		 lcon = false;
+
+		 socketMsgRecieved = false;
+
+		 shiftOsKeyPressed = false;
+
+		 baRole = 0;
 	}
 
 	@Subscribe
@@ -386,8 +402,10 @@ public class AzEasyScapePlugin extends Plugin {
 	@Subscribe
 	public void onClientTick(ClientTick event) {
 
-		if(getBaWidget() != null){
-			return;
+
+		if(config.lcAllwaysOn() || lcon)
+		{
+			fixHealer();
 		}
 
 			skillifwait5 = skillifwait5 +1;
@@ -449,7 +467,7 @@ public class AzEasyScapePlugin extends Plugin {
 				}
 			}
 		}
-		if (getBaWidget().getText() != null && config.socketba()) {
+		if (getBaWidget() != null && config.socketba()) {
 			skillifwait4 = skillifwait4 +1;
 			if (skillifwait4 >= 30)
 			{
@@ -525,6 +543,7 @@ public class AzEasyScapePlugin extends Plugin {
 			this.client.setMenuEntries(entries);
 		}
 		fixHorn();
+		//fixHealer();
 /*		if (this.client.getGameState() == GameState.LOGGED_IN && this.inGameBit == 1 && this.baRole == 4) {
 			List<MenuEntry> smallNyloEntries = new ArrayList<>();
 			List<MenuEntry> restEntries = new ArrayList<>();
@@ -766,24 +785,28 @@ public class AzEasyScapePlugin extends Plugin {
 			//TODO figure out a fix here e.set(1001);
 		}
 		if(config.lcAllwaysOn() || lcon) {
-			if (e.getMenuTarget().contains("Penance Healer")) {
-				e.consume();
-				//System.out.println("Found");
-				Optional<NPC> healer = NPCs.search().nameContains("Penance Healer").filter(npc -> npc.getIndex() == e.getId()).first();
-				System.out.println(healer.get());
-				if (healer.isPresent()) {
-					System.out.println("Found idx");
-					MousePackets.queueClickPacket();
-					Widget listenWid = this.client.getWidget(488, this.config.listenWidget());
-					String bacall = listenWid.getText().toLowerCase();
-					Optional<Widget> food = Inventory.search().nameContains(bacall.split(" ")[1]).first();
-					if (food.isPresent()) {
-						MousePackets.queueClickPacket();
-						NPCPackets.queueWidgetOnNPC(healer.get(), food.get());
-					}
+				if (e.getMenuEntry().getParam0() == 6969){
+					{
+						e.consume();
+						//System.out.println("Found");
+						Optional<NPC> healer = NPCs.search().nameContains("Penance Healer").filter(npc -> npc.getIndex() == e.getId()).first();
+						System.out.println(healer.get());
+						if (healer.isPresent()) {
+							System.out.println("Found idx");
+							MousePackets.queueClickPacket();
+							Widget listenWid = this.client.getWidget(488, this.config.listenWidget());
+							String bacall = listenWid.getText().toLowerCase();
+							List<Widget> food = Inventory.search().nameContains(bacall.split(" ")[1]).result();
+							if (food.size() >0) {
+								MousePackets.queueClickPacket();
+								NPCPackets.queueWidgetOnNPC(healer.get(),food.get(food.size()-1));
+							}
 
+						}
+					}
 				}
-			}
+
+
 		}
 
 	}
@@ -892,6 +915,69 @@ public class AzEasyScapePlugin extends Plugin {
 			}
 		}
 	}
+
+	private boolean canAdd(MenuEntry npc){
+
+		return npc.getTarget().contains("Penance Healer") && npc.getOption().equals("Examine");
+	}
+
+	private void fixHealer() {
+		if (true) {
+			//System.out.println("testing");
+			List<MenuEntry> curr = Arrays.stream(client.getMenuEntries()).filter(e -> e.getTarget().contains("FOOD")).collect(Collectors.toList());
+			//System.out.println(curr);
+			if(curr.size() > 0){
+				System.out.println("wipe");
+				client.setMenuEntries((MenuEntry[]) curr.stream().toArray());
+			}
+
+			List<MenuEntry> smallNyloEntries = new ArrayList<>();
+			List<MenuEntry> restEntries = new ArrayList<>();
+			/*String baW = getBaWidget().getText();
+			Widget listenWid = this.client.getWidget(488, this.config.listenWidget());
+			String bacall = listenWid.getText().toLowerCase();*/
+			ArrayList<MenuEntry> healMenus = new ArrayList<>();
+			ArrayList<NPC> healers = new ArrayList<>();
+			//System.out.println("Here1");
+			Arrays.stream(client.getMenuEntries()).filter(npc -> canAdd(npc)).forEach(x -> healers.add(x.getNpc()));
+			//Arrays.stream(client.getMenuEntries()).filter(npc -> npc.getTarget().contains("Penance Healer")).forEach(x -> System.out.println(x.getNpc()));
+
+			for(NPC healer : healers){
+				//System.out.println("Here");
+				MenuEntry menu = client.createMenuEntry(-1);
+				menu.setTarget(String.format("<col=ff9040>%s</col><col=ffffff> -> <col=ffff00>Penance Healer","FOOD"));
+				menu.setOption("Use");
+				menu.setType(MenuAction.WIDGET_TARGET_ON_NPC);
+				menu.setIdentifier(healer.getIndex());
+				menu.setParam0(6969);
+				menu.setParam1(0);
+				healMenus.add(menu);
+				eventBus.post(new MenuEntryAdded(menu));
+				//System.out.println(menu);
+			}
+
+				//MenuEntry newW = Arrays.stream(client.getMenuEntries()).filter(npc -> npc.getTarget().equals("Penance Healer")).findFirst().get();
+
+
+				for (MenuEntry ent : this.client.getMenuEntries()) {
+
+					String entTarget = ent.getTarget().toLowerCase();
+					String entOption = ent.getOption();
+					//System.out.println(ent == newW);
+					if (ent.getTarget().equals("Penance Healer") && ent.getOption().contains("->")) {
+						smallNyloEntries.add(ent);
+					} else {
+						restEntries.add(ent);
+					}
+				}
+				List<MenuEntry> newEntries = (List<MenuEntry>)Stream.concat(restEntries.stream(), smallNyloEntries.stream()).collect(Collectors.toList());
+				this.client.setMenuEntries(newEntries.<MenuEntry>toArray(new MenuEntry[0]));
+		}
+	}
+
+
+
+
 
 	static String stripColor(String str) {
 		return str.replaceAll("(<col=[0-9a-f]+>|</col>)", "");
