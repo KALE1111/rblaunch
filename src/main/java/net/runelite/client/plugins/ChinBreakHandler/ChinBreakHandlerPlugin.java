@@ -1,15 +1,13 @@
 package net.runelite.client.plugins.ChinBreakHandler;
 
 import com.example.EthanApiPlugin.Collections.Widgets;
-import net.runelite.client.plugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
-import net.runelite.client.plugins.ChinBreakHandler.util.IntRandomNumberGenerator;
-import com.example.EthanApiPlugin.EthanApiPlugin;
-import com.example.PacketUtils.PacketUtilsPlugin;
 import com.example.PacketUtils.WidgetID;
 import com.example.Packets.MousePackets;
 import com.example.Packets.WidgetPackets;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
+import net.runelite.client.plugins.ChinBreakHandler.ui.ChinBreakHandlerPanel;
+import net.runelite.client.plugins.ChinBreakHandler.util.IntRandomNumberGenerator;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import lombok.Getter;
@@ -35,7 +33,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.WorldService;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
@@ -52,6 +49,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -66,14 +64,15 @@ import java.util.concurrent.TimeUnit;
 
 
 @PluginDescriptor(
-        name = "<html><font color=#86C43F>[RB]</font> Chin break handler</html>",
+        name = "Chin break handler",
         description = "Automatically takes breaks for you",
-        tags = {"ethan", "Runebot","Break", "Chine"}
+        tags = {"ethan", "piggy","break","chin"}
 )
 @Slf4j
 public class ChinBreakHandlerPlugin extends Plugin {
 
     private static final int DISPLAY_SWITCHER_MAX_ATTEMPTS = 3;
+    private static final int MAX_WORLD = 580;
 
     @Inject
     private Client client;
@@ -124,12 +123,14 @@ public class ChinBreakHandlerPlugin extends Plugin {
     public Disposable secondsDisposable;
     public Disposable activeDisposable;
     public Disposable logoutDisposable;
+    public Disposable loginDisposable;
 
     private State state = State.NULL;
     private ExecutorService executorService;
 
     private net.runelite.api.World quickHopTargetWorld;
     private int displaySwitcherAttempts = 0;
+    private boolean login = false;
 
     protected void startUp()
     {
@@ -162,9 +163,8 @@ public class ChinBreakHandlerPlugin extends Plugin {
                         {
                             if (!plugins.isEmpty())
                             {
-                                if (!navButton.isSelected())
-                                {
-                                    navButton.getOnSelect().run();
+                                if (!navButton.getPanel().isVisible()) {
+                                    clientToolbar.openPanel(navButton);
                                 }
                             }
                         }
@@ -177,10 +177,22 @@ public class ChinBreakHandlerPlugin extends Plugin {
                         {
                             if (plugin != null)
                             {
-                                logout = true;
-                                state = State.LOGOUT;
+                                if (state != State.LOGOUT && state != State.LOGOUT_TAB && state != State.LOGOUT_BUTTON && state != State.LOGOUT_WAIT) {
+                                    logout = true;
+                                    state = State.LOGOUT;
+                                }
                             }
                         }
+                );
+
+        loginDisposable = chinBreakHandler
+                .getLoginActionObservable()
+                .subscribe(
+                        (plugin -> {
+                            if (plugin != null) {
+                                login = true;
+                            }
+                        })
                 );
     }
 
@@ -252,11 +264,26 @@ public class ChinBreakHandlerPlugin extends Plugin {
         }
     }
 
+    private boolean loginCheck() {
+        Map<Plugin, Instant> activeBreaks = chinBreakHandler.getActiveBreaks();
+        Map<Plugin, Instant> plannedBreaks = chinBreakHandler.getPlannedBreaks();
+
+        if (login) {
+            return false;
+        }
+
+        if (optionsConfig.autoLoginOnDisconnect()) {
+            return (activeBreaks.isEmpty() && plannedBreaks.isEmpty());
+        } else {
+            return activeBreaks.isEmpty();
+        }
+    }
+
     private void seconds(long ignored)
     {
         Map<Plugin, Instant> activeBreaks = chinBreakHandler.getActiveBreaks();
 
-        if (activeBreaks.isEmpty() || client.getGameState() != GameState.LOGIN_SCREEN)
+        if (loginCheck() || client.getGameState() != GameState.LOGIN_SCREEN)
         {
             return;
         }
@@ -271,7 +298,7 @@ public class ChinBreakHandlerPlugin extends Plugin {
             }
         }
 
-        if (finished)
+        if (finished || login)
         {
             boolean manual = Boolean.parseBoolean(configManager.getConfiguration("chinBreakHandler", "accountselection"));
 
@@ -307,6 +334,20 @@ public class ChinBreakHandlerPlugin extends Plugin {
                 }
             }
 
+            boolean usingJagexLauncher = Boolean.parseBoolean(configManager.getConfiguration("chinBreakHandler", "jagexLauncher"));
+
+            if (usingJagexLauncher) {
+                clientThread.invoke(() -> {
+                    // this might not even work tbh
+//                    sendKey(KeyEvent.VK_ENTER); // do we need these? surely not
+//                    sendKey(KeyEvent.VK_ENTER);
+//                    sendKey(KeyEvent.VK_ENTER);
+                    client.setGameState(GameState.LOGGING_IN);
+                });
+
+                return;
+            }
+
             if (username != null && password != null)
             {
                 String finalUsername = username;
@@ -336,13 +377,16 @@ public class ChinBreakHandlerPlugin extends Plugin {
     @Subscribe
     public void onGameStateChanged(GameStateChanged gameStateChanged)
     {
-        if (gameStateChanged.getGameState() == GameState.LOGIN_SCREEN)
+        if (gameStateChanged.getGameState() == GameState.LOGIN_SCREEN || gameStateChanged.getGameState() == GameState.CONNECTION_LOST)
         {
             state = State.LOGIN_SCREEN;
 
             if (!chinBreakHandler.getActivePlugins().isEmpty())
             {
-                if (optionsConfig.hopAfterBreak() && (optionsConfig.american() || optionsConfig.unitedKingdom() || optionsConfig.german() || optionsConfig.australian()))
+                if (optionsConfig.hopAfterBreak() && (optionsConfig.american()
+                        || optionsConfig.unitedKingdom()
+                        || optionsConfig.german()
+                        || optionsConfig.australian()))
                 {
                     hop();
                 }
@@ -365,7 +409,7 @@ public class ChinBreakHandlerPlugin extends Plugin {
         {
             state = State.LOGOUT;
         }
-        else if (state == State.LOGIN_SCREEN && !chinBreakHandler.getActiveBreaks().isEmpty())
+        else if (state == State.LOGIN_SCREEN && (!chinBreakHandler.getActiveBreaks().isEmpty() || login))
         {
 
             MousePackets.queueClickPacket();
@@ -771,6 +815,21 @@ public class ChinBreakHandlerPlugin extends Plugin {
             currentWorldTypes.remove(WorldType.LAST_MAN_STANDING);
 
             List<World> worlds = worldResult.getWorlds();
+
+            String[] badWorldIds = optionsConfig.avoidWorldsNumbers().replace(", ", ",").split(",");
+            List<Integer> badWorlds = new ArrayList<>();
+            for (String worldIdString : badWorldIds) {
+                if (!isNumeric(worldIdString)) {
+                    continue;
+                } else {
+                    int id = Integer.valueOf(worldIdString);
+                    if (id <= MAX_WORLD) {
+                        badWorlds.add(id);
+                    }
+                }
+            }
+
+            worlds.removeIf(world -> world.getPlayers() >= optionsConfig.avoidWorldsPlayerCount() || badWorlds.contains(world.getId()));
 
             int totalLevel = client.getTotalLevel();
 
