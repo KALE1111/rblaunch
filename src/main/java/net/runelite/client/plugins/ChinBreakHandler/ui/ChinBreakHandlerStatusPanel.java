@@ -1,5 +1,4 @@
 package net.runelite.client.plugins.ChinBreakHandler.ui;
-
 import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandler;
 import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import net.runelite.client.plugins.ChinBreakHandler.util.SwingUtilExtended;

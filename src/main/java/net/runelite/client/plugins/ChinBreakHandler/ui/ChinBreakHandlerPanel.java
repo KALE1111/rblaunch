@@ -1,11 +1,10 @@
 package net.runelite.client.plugins.ChinBreakHandler.ui;
-
+import com.google.inject.Inject;
 import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandler;
 import net.runelite.client.plugins.ChinBreakHandler.ChinBreakHandlerPlugin;
 import net.runelite.client.plugins.ChinBreakHandler.util.ConfigPanel;
 import net.runelite.client.plugins.ChinBreakHandler.util.JMultilineLabel;
 import net.runelite.client.plugins.ChinBreakHandler.util.SwingUtilExtended;
-import com.google.inject.Inject;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.Disposable;
 import net.runelite.client.plugins.Plugin;
