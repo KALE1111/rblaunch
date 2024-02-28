@@ -1,0 +1,11 @@
+package net.runelite.client.plugins.AutoChopper.Enums;
+
+public enum ChopperStates {
+    STARTING,
+    CHOPPING_LOGS,
+    BURNING_LOGS,
+    DROPPING_LOGS,
+    OPENING_BANK,
+    CLOSING_BANK,
+    BANKING_LOGS
+}
