@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @PluginDescriptor(
-        name = "<html><font color=#86C43F>[RB]</font> Gauntlet Pray+wep flick</html>",
+        name = "<html><font color=#86C43F>[RB]</font> Gauntlet Helper</html>",
         description = "",
         tags = {"ethan"}
 )
