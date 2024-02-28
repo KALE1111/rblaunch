@@ -29,7 +29,8 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.ScheduledExecutorService;
 import java.security.GeneralSecurityException;
 import javax.inject.Inject;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
@@ -40,16 +41,14 @@ import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
-import net.runelite.client.ui.ClientUI;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.util.ImageUtil;
 
-
 @PluginDescriptor(
-	name = "Better Profiles",
-	enabledByDefault = false,
-	description = "Allow for a allows you to easily switch between multiple OSRS Accounts",
-	tags = {"profile", "account", "login", "log in", "pklite"}
+		name = "<html><font color=86C43F>[RB]</font> Better Profiles</html>",
+		enabledByDefault = false,
+		description = "Allow for a allows you to easily switch between multiple OSRS Accounts - Ported by Piggy",
+		tags = {"profile", "account", "login", "log in", "pklite"}
 )
 @Slf4j
 public class BetterProfilesPlugin extends Plugin
@@ -81,14 +80,14 @@ public class BetterProfilesPlugin extends Plugin
 		panel = injector.getInstance(BetterProfilesPanel.class);
 		panel.init();
 
-		final BufferedImage icon = ImageUtil.getResourceStreamFromClass(getClass(), "profiles_icon.png");
+		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "profiles_icon.png");
 
 		navButton = NavigationButton.builder()
-			.tooltip("Profiles")
-			.icon(icon)
-			.priority(8)
-			.panel(panel)
-			.build();
+				.tooltip("Profiles")
+				.icon(icon)
+				.priority(8)
+				.panel(panel)
+				.build();
 
 		clientToolbar.addNavigation(navButton);
 	}
@@ -102,23 +101,13 @@ public class BetterProfilesPlugin extends Plugin
 	@Subscribe
 	private void onGameStateChanged(GameStateChanged event)
 	{
-		if (!config.switchPanel())
-		{
-			return;
-		}
-		if (event.getGameState().equals(GameState.LOGIN_SCREEN))
-		{
-			if (!navButton.isSelected())
-			{
-				//openPanel();
-			}
-		}
+
 	}
 
 	@Subscribe
 	private void onConfigChanged(ConfigChanged event)
 	{
-		if (event.getGroup().equals("betterProfiles"))
+		if (event.getGroup().equals("piggyProfiles"))
 		{
 			if (event.getKey().equals("rememberPassword"))
 			{
@@ -143,21 +132,7 @@ public class BetterProfilesPlugin extends Plugin
 
 	private void openPanel()
 	{
-		if (config.switchPanel())
-		{
-			clientThread.invokeLater(() ->
-			{
 
-
-				if (navButton.isSelected())
-				{
-					return true;
-				}
-
-				SwingUtilities.invokeLater(() -> executorService.submit(() -> navButton.getOnSelect().run()));
-				return true;
-			});
-		}
 	}
 
 }
