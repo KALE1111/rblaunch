@@ -140,15 +140,15 @@ public class AutoGemMiner extends Plugin {
             currentState = GemMinerState.STARTING;
             startup = false;
         }
-        if (isAtShiloVillage() && inventoryIsEmpty() && !isAtGemMine())
+        if (isAtShiloVillage() && !Inventory.full() && !isAtGemMine())
             currentState = GemMinerState.WALKING_TO_MINE;
-        if (!inventoryIsFull() && shouldMine)
+        if (Inventory.full() && shouldMine)
             currentState = GemMinerState.MINING_GEMS;
         if (inventoryIsFull() && shouldMine)
             currentState = GemMinerState.WALKING_TO_BANK;
-        if (isAtBank() && inventoryIsFull())
+        if (isAtBank() && Inventory.full())
             currentState = GemMinerState.OPENING_BANK;
-        if (Bank.isOpen() && inventoryIsFull())
+        if (Bank.isOpen() && Inventory.full())
             currentState = GemMinerState.DEPOSIT_GEMS;
         if (isAtBank() && Bank.isOpen() && inventoryIsEmpty())
             currentState = GemMinerState.CLOSE_BANK;
@@ -168,25 +168,28 @@ public class AutoGemMiner extends Plugin {
 
     public void mineGems() {
         if (!isMining()) {
-            Optional<TileObject> gemRocks = TileObjects.search().withName("Gem rocks").first();
-            if (gemRocks.isPresent() && !EthanApiPlugin.isMoving() && !client.getLocalPlayer().isInteracting()) {
-                TileObjectInteraction.interact(gemRocks.get(), "Mine");
-            }
+            TileObjects.search().withId(11381).nearestToPlayer().ifPresent(gemRocks -> {
+                TileObjectInteraction.interact(gemRocks, "Mine");
+                timeout += 2;
+            });
         }
-
     }
 
     public void walkToBank() {
         shouldMine = false;
-        WorldPoint bankLocation = new WorldPoint(2851, 2955, 0);
-        PathingTesting.walkTo(bankLocation);
+        if (!EthanApiPlugin.isMoving()) {
+            WorldPoint bankLocation = new WorldPoint(2851, 2955, 0);
+            PathingTesting.walkTo(bankLocation);
+        }
     }
 
     public void openBank() {
-        NPCs.search().withName("Banker").nearestToPlayer().ifPresent(bankNpc -> {
-            NPCInteraction.interact(bankNpc, "Bank");
-            timeout += 2;
-        });
+        if (!EthanApiPlugin.isMoving() && !client.getLocalPlayer().isInteracting()) {
+            NPCs.search().withName("Banker").nearestToPlayer().ifPresent(bankNpc -> {
+                NPCInteraction.interact(bankNpc, "Bank");
+                timeout += 2;
+            });
+        }
     }
 
 
