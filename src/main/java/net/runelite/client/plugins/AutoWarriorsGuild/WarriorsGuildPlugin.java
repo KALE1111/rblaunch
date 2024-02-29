@@ -96,7 +96,9 @@ public class WarriorsGuildPlugin extends Plugin {
         handlePrayer();
         handleState();
         stopPlugin();
-
+        System.out.println("Is in Animator room: " + isInAnimatorRoom());
+        System.out.println("Has Armor: " + hasArmor());
+        System.out.println("Has items to loot: " + hasItemsToLoot());
         if (timeout > 0) {
             timeout--;
             return;
@@ -203,10 +205,10 @@ public class WarriorsGuildPlugin extends Plugin {
         NPC hintArrowNpc = client.getHintArrowNpc();
 
         if (hintArrowNpc != null && hintArrowNpc.getName().contains("Animated")) {
-            PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MELEE, Prayer.PIETY);
+            PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MELEE, config.offensivePrayer().getPrayer());
         } else {
             PrayerInteraction.setPrayerState(Prayer.PROTECT_FROM_MELEE, false);
-            PrayerInteraction.setPrayerState(Prayer.PIETY, false);
+            PrayerInteraction.setPrayerState(config.offensivePrayer().getPrayer(), false);
         }
     }
 
@@ -227,7 +229,10 @@ public class WarriorsGuildPlugin extends Plugin {
     }
 
     public boolean hasItemsToLoot() {
-        return itemsToLoot();
+        return TileItems.search().withName("Warrior guild token").nearestToPlayer().isPresent() ||
+                TileItems.search().withName(determineArmorSet().getHelm()).nearestToPlayer().isPresent() ||
+                TileItems.search().withName(determineArmorSet().getBody()).nearestToPlayer().isPresent() ||
+                TileItems.search().withName(determineArmorSet().getLegs()).nearestToPlayer().isPresent();
     }
 
     public boolean InventoryHasAllArmorPieces() {

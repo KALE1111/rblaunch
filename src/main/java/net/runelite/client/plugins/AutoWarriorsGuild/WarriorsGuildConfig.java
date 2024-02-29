@@ -5,7 +5,7 @@ import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigSection;
 
-@ConfigGroup("autoWarriorsGuildConfig")
+@ConfigGroup("warriorsGuildConfig")
 public interface WarriorsGuildConfig extends Config {
 
     @ConfigSection(
@@ -43,6 +43,17 @@ public interface WarriorsGuildConfig extends Config {
     default Armors armorType() {
         return Armors.BLACK;
 
+    }
+
+    @ConfigItem(
+            keyName = "offensivePrayer",
+            name = "Prayer",
+            description = " ",
+            position = 55,
+            section = armorConfigurations
+    )
+    default OffensivePrayer offensivePrayer() {
+        return OffensivePrayer.PIETY;
     }
 
     @ConfigSection(
