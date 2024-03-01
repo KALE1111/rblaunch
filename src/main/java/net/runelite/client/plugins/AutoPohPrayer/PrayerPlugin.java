@@ -7,13 +7,13 @@ import com.example.InteractionApi.TileObjectInteraction;
 import com.example.Packets.*;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.Client;
-import net.runelite.api.GameState;
+import net.runelite.api.*;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -36,9 +36,10 @@ public class PrayerPlugin extends Plugin {
     private OverlayManager overlayManager;
     @Inject
     public PrayerOverlay overlay;
-    String currentSubState = "Idle";
     @Inject
     PrayerConfig config;
+    @Inject
+    EventBus eventBus;
     private Instant startTime;
     public int timeout;
     public PrayerStates currentState = PrayerStates.STARTING;
@@ -71,10 +72,6 @@ public class PrayerPlugin extends Plugin {
         return startTime;
     }
 
-    public String getCurrentSubState() {
-        return currentSubState;
-    }
-
 
     @Provides
     PrayerConfig provideConfig(ConfigManager configManager) {
@@ -98,13 +95,16 @@ public class PrayerPlugin extends Plugin {
             return;
         }
 
+        refreshTabs();
+
         if (timeout > 0) {
             timeout--;
             return;
         }
 
         handleState();
-        //safeGuards();
+        safeGuards();
+
         switch (currentState) {
             case ENTERING_HOUSE:
                 enterHouse();
@@ -136,9 +136,9 @@ public class PrayerPlugin extends Plugin {
             currentState = PrayerStates.ENTERING_HOUSE;
         if (hasUnnotedBonesInInventory() && altarInVicinity())
             currentState = PrayerStates.USING_BONES_ON_ALTAR;
-        if (!inventoryFull() && isInInstance() && noBonesLeft())
+        if (!Inventory.full() && isInInstance() && noBonesLeft())
             currentState = PrayerStates.LEAVING_HOUSE;
-        if (!inventoryFull() && noBonesLeft() && isOutsideHouse())
+        if (!Inventory.full() && noBonesLeft() && isOutsideHouse())
             currentState = PrayerStates.UNNOTING_BONES;
         if (isDialogOpen())
             currentState = PrayerStates.HANDLING_DIALOG;
@@ -147,12 +147,16 @@ public class PrayerPlugin extends Plugin {
         }
     }
 
+    private void refreshTabs() {
+        eventBus.post(new ItemContainerChanged(InventoryID.INVENTORY.getId(), client.getItemContainer(InventoryID.INVENTORY)));
+        eventBus.post(new ItemContainerChanged(InventoryID.EQUIPMENT.getId(), client.getItemContainer(InventoryID.EQUIPMENT)));
+    }
+
 
     public void enterHouse() {
         if (!client.getLocalPlayer().isInteracting() && !EthanApiPlugin.isMoving()) {
         TileObjects.search().withId(29091).nearestToPlayer().ifPresent(house -> {
             TileObjectInteraction.interact(house, "Visit-Last");
-//            currentSubState = "Entering House..";
         });
         }
     }
@@ -162,7 +166,6 @@ public class PrayerPlugin extends Plugin {
         if (!EthanApiPlugin.isMoving()) {
             TileObjects.search().nameContains("Portal").nearestToPlayer().ifPresent(portal -> {
                 TileObjectInteraction.interact(portal, "Enter");
-//                currentSubState = "Leaving House..";
             });
         }
     }
@@ -170,7 +173,6 @@ public class PrayerPlugin extends Plugin {
     private void drinkPool() {
         TileObjects.search().nameContains("Pool").withAction("Drink").nearestToPlayer().ifPresent(pool -> {
             TileObjectInteraction.interact(pool, "Drink");
-//            currentSubState = "Restoring Stamina..";
         });
     }
 
@@ -179,7 +181,6 @@ public class PrayerPlugin extends Plugin {
             Inventory.search().withName(config.nameOfBones()).first().ifPresent(bones -> {
                 MousePackets.queueClickPacket();
                 NPCPackets.queueWidgetOnNPC(phials, bones);
-//                currentSubState = "Using Bones on Phials..";
             });
         });
     }
@@ -189,7 +190,6 @@ public class PrayerPlugin extends Plugin {
         if (!isDialogOpen() && !EthanApiPlugin.isMoving() && !exchangeAll.isHidden())
             MousePackets.queueClickPacket();
             WidgetPackets.queueResumePause(14352385, 3);
-//            currentSubState = "Exchanging Bones..";
     }
 
 
@@ -205,16 +205,12 @@ public class PrayerPlugin extends Plugin {
     }
 
     private void safeGuards() {
-        Optional<Widget> notedBones = Inventory.search().onlyNoted().withName(config.nameOfBones()).first();
         Optional<Widget> coins = Inventory.search().withName("Coins").first();
-        if (coins.isEmpty() || notedBones.isEmpty() || notEnoughNotedBonesLeft()) {
+        Optional<Widget> bones = Inventory.search().withName(config.nameOfBones()).first();
+        if (coins.isEmpty() || bones.isEmpty()) {
             client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "<col=ff0000>You are out of coins or noted bones. Stopping plugin.", null);
             EthanApiPlugin.stopPlugin(this);
         }
-    }
-
-
-    private void Idle() {
     }
 
     public boolean hasUnnotedBonesInInventory() {
@@ -223,10 +219,6 @@ public class PrayerPlugin extends Plugin {
 
     public boolean lowRunEnergy() {
         return client.getEnergy() < 2000;
-    }
-
-    public boolean inventoryFull() {
-        return Inventory.full();
     }
 
     public boolean noBonesLeft() {
@@ -238,10 +230,6 @@ public class PrayerPlugin extends Plugin {
 
     public boolean poolIsPresent() {
         return TileObjects.search().nameContains("Pool").withAction("Drink").nearestToPlayer().isPresent();
-    }
-
-    public boolean notEnoughNotedBonesLeft() {
-        return Inventory.search().onlyNoted().nameContains(config.nameOfBones()).result().size() < 26;
     }
 
     public boolean isInInstance() {

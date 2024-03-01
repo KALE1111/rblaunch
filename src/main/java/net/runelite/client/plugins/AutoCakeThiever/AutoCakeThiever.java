@@ -28,7 +28,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 @PluginDescriptor(
-        name = "<html><font color=\"#F39715\">Bn</font> AutoCakes</html>",
+        name = "<html><font color=86C43F>[B]</font> Cake Thiever </html>",
         description = "",
         enabledByDefault = false,
         tags = {"bn", "plugins"}
