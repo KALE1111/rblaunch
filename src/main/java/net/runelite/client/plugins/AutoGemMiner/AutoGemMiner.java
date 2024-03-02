@@ -14,6 +14,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
+import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
@@ -25,7 +26,9 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 
 @PluginDescriptor(
@@ -54,7 +57,6 @@ public class AutoGemMiner extends Plugin {
     boolean startup;
     WorldPoint BankTile = new WorldPoint(2851, 2955, 0);
     WorldPoint GemMine = new WorldPoint(2820, 2997, 0);
-    boolean shouldMine = false;
     @Provides
     AutoGemMinerConfig provideConfig(ConfigManager configManager) {
         return configManager.getConfig(AutoGemMinerConfig.class);
@@ -100,10 +102,12 @@ public class AutoGemMiner extends Plugin {
             return;
         }
 
+
         if(timeout > 0) {
             timeout--;
             return;
         }
+
 
         freeSlots = Inventory.getEmptySlots();
         handleCounter();
@@ -128,9 +132,6 @@ public class AutoGemMiner extends Plugin {
             case CLOSE_BANK:
                 closeBank();
                 break;
-            case IDLE:
-                Idle();
-                break;
         }
 
     }
@@ -140,17 +141,17 @@ public class AutoGemMiner extends Plugin {
             currentState = GemMinerState.STARTING;
             startup = false;
         }
-        if (isAtShiloVillage() && !Inventory.full() && !isAtGemMine())
+        if (isAtShiloVillage() && !Inventory.full() && !isInGemArea())
             currentState = GemMinerState.WALKING_TO_MINE;
-        if (Inventory.full() && shouldMine)
+        if (!Inventory.full() && isInGemArea())
             currentState = GemMinerState.MINING_GEMS;
-        if (inventoryIsFull() && shouldMine)
+        if (Inventory.full() && !isAtBankArea())
             currentState = GemMinerState.WALKING_TO_BANK;
-        if (isAtBank() && Inventory.full())
+        if (isAtBankArea() && Inventory.full())
             currentState = GemMinerState.OPENING_BANK;
         if (Bank.isOpen() && Inventory.full())
             currentState = GemMinerState.DEPOSIT_GEMS;
-        if (isAtBank() && Bank.isOpen() && inventoryIsEmpty())
+        if (isAtBankArea() && Bank.isOpen() && !Inventory.full())
             currentState = GemMinerState.CLOSE_BANK;
     }
 
@@ -167,8 +168,8 @@ public class AutoGemMiner extends Plugin {
     }
 
     public void mineGems() {
-        if (!isMining()) {
-            TileObjects.search().withId(11381).nearestToPlayer().ifPresent(gemRocks -> {
+        if (!isMining() && !EthanApiPlugin.isMoving()) {
+            TileObjects.search().withName("Gem rocks").nearestToPlayer().ifPresent(gemRocks -> {
                 TileObjectInteraction.interact(gemRocks, "Mine");
                 timeout += 2;
             });
@@ -176,7 +177,6 @@ public class AutoGemMiner extends Plugin {
     }
 
     public void walkToBank() {
-        shouldMine = false;
         if (!EthanApiPlugin.isMoving()) {
             WorldPoint bankLocation = new WorldPoint(2851, 2955, 0);
             PathingTesting.walkTo(bankLocation);
@@ -187,7 +187,7 @@ public class AutoGemMiner extends Plugin {
         if (!EthanApiPlugin.isMoving() && !client.getLocalPlayer().isInteracting()) {
             NPCs.search().withName("Banker").nearestToPlayer().ifPresent(bankNpc -> {
                 NPCInteraction.interact(bankNpc, "Bank");
-                timeout += 2;
+                timeout += 1;
             });
         }
     }
@@ -195,7 +195,6 @@ public class AutoGemMiner extends Plugin {
 
     public void depositGems() {
         if (Bank.isOpen()) {
-            timeout += 2;
             Widget depositInventory = client.getWidget(WidgetInfo.BANK_DEPOSIT_INVENTORY);
             if (depositInventory != null) {
                 MousePackets.queueClickPacket();
@@ -210,34 +209,28 @@ public class AutoGemMiner extends Plugin {
         client.runScript((29));
     }
 
-    public void Idle() {
+    public Set<WorldPoint> gemArea() {
+        return new HashSet<>(new WorldArea(new WorldPoint(2818, 2996, 0), 11, 10).toWorldPointList());
+    }
+
+    public Set<WorldPoint> bankArea() {
+        return new HashSet<>(new WorldArea(new WorldPoint(2850, 2952, 0), 5, 6).toWorldPointList());
+    }
+
+    public boolean isAtBankArea() {
+        return bankArea().contains(client.getLocalPlayer().getWorldLocation());
+    }
+
+    public boolean isInGemArea() {
+        return gemArea().contains(client.getLocalPlayer().getWorldLocation());
     }
 
     public boolean isAtShiloVillage() {
         return client.getLocalPlayer().getWorldLocation().getRegionID() == 11310;
     }
 
-    public boolean inventoryIsEmpty() {
-        return Inventory.getEmptySlots() == 28;
-    }
-
-    public boolean inventoryIsFull() {
-        return Inventory.full();
-    }
-
-    public boolean isAtBank() {
-        return client.getLocalPlayer().getWorldLocation().equals(BankTile);
-    }
-
     public boolean isMining() {
         return client.getLocalPlayer().getAnimation() == AnimationID.MINING_RUNE_PICKAXE;
-    }
-
-    public boolean isAtGemMine() {
-        if(client.getLocalPlayer().getWorldLocation().equals(GemMine)) {
-            shouldMine = true;
-        }
-        return client.getLocalPlayer().getWorldLocation().equals(GemMine);
     }
 }
 

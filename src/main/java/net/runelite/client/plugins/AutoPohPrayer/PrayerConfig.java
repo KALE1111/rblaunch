@@ -69,8 +69,8 @@ public interface PrayerConfig extends Config {
             keyName = "drinkPool",
             name = "Drink from pool",
             description = "",
-            position = 0,
-            section = uiSettings
+            position = 55,
+            section = userConfiguration
     )
     default boolean drinkPool() {
         return false;
