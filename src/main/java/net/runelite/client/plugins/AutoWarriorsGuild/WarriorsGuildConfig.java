@@ -26,6 +26,8 @@ public interface WarriorsGuildConfig extends Config {
         return "Select the armor to use and enter the animator room. Only gathers tokens and stops at set amount.";
     }
 
+
+
     @ConfigSection(
             name = "Combat Configurations",
             description = "Armors and Combat Configurations",
@@ -55,6 +57,7 @@ public interface WarriorsGuildConfig extends Config {
     default OffensivePrayer offensivePrayer() {
         return OffensivePrayer.PIETY;
     }
+
 
     @ConfigSection(
             name = "UI Settings & Debugging",
