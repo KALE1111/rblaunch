@@ -64,6 +64,7 @@ public class ChopperPlugin extends Plugin {
     boolean isBurnable;
     boolean isDropping;
     boolean isBurning;
+    boolean startup;
 
     @Override
     protected void startUp() throws Exception {
@@ -124,7 +125,6 @@ public class ChopperPlugin extends Plugin {
         }
 
         refreshTabs();
-        useDragonAxeSpec();
         handleState();
 
         switch (currentState) {
@@ -147,10 +147,17 @@ public class ChopperPlugin extends Plugin {
             case CLOSING_BANK:
                 closeBank();
                 break;
+            case USING_SPECIAL_ATTACK:
+                useDragonAxeSpec();
+                break;
         }
     }
 
     private void handleState() {
+        if (startup) {
+            currentState = STARTING;
+            startup = false;
+        }
         if (Inventory.full() && config.logAction() == LogAction.DROP) {
             currentState = DROPPING_LOGS;
             isDropping = true;
@@ -169,8 +176,12 @@ public class ChopperPlugin extends Plugin {
             currentState = BANKING_LOGS;
             return;
         }
-        if (logsAreEmpty() && !isPlayerAnimating()) {
+        if (!Inventory.full() && !isPlayerAnimating() && !isDropping && !isBurning) {
             currentState = CHOPPING_LOGS;
+            return;
+        }
+        if (!isDropping && !isBurning && fullSpecialAttack()) {
+            currentState = USING_SPECIAL_ATTACK;
             return;
         }
     }
@@ -182,7 +193,7 @@ public class ChopperPlugin extends Plugin {
 
     private void chopTree() {
         if (!isPlayerAnimating() && !EthanApiPlugin.isMoving()) {
-            TileObjects.search().nameContains(config.treeType().getTreeName()).nearestToPlayer().ifPresent(tree -> {
+            TileObjects.search().withName(config.treeType().getTreeName()).nearestToPlayer().ifPresent(tree -> {
                 TileObjectInteraction.interact(tree, "Chop down");
                 System.out.println("Chopping tree");
             });
@@ -198,7 +209,9 @@ public class ChopperPlugin extends Plugin {
                 InventoryInteraction.useItem(log, "Drop");
                 count++;
             }
-            isDropping = false;
+            if (logsAreEmpty()) {
+                isDropping = false;
+            }
         }
     }
 
@@ -217,7 +230,7 @@ public class ChopperPlugin extends Plugin {
         WorldPoint currentPlayerPosition = EthanApiPlugin.playerPosition();
         Optional<TileObject> tileObject = TileObjects.search().atLocation(currentPlayerPosition).first();
         if (tileObject.isEmpty() || isBurnable(tileObject.get())) {
-            Optional<Widget> tinderbox = Inventory.search().nameContains("Tinderbox").first();
+            Optional<Widget> tinderbox = Inventory.search().withName("Tinderbox").first();
             if (tinderbox.isPresent()) {
                 MousePackets.queueClickPacket();
                 WidgetPackets.queueWidgetOnWidget(tinderbox.get(), logs.get());
@@ -262,12 +275,10 @@ public class ChopperPlugin extends Plugin {
     }
 
     private void useDragonAxeSpec() {
-        if (!isDropping && !isBurning) {
             Equipment.search().withId(ItemID.DRAGON_AXE).first().ifPresent(axe -> {
                 MousePackets.queueClickPacket();
                 WidgetPackets.queueWidgetActionPacket(1, WidgetInfoExtended.COMBAT_SPECIAL_ATTACK_CLICKBOX.getPackedId(), -1, -1);
             });
-        }
     }
 
     private void openBank() {
@@ -306,6 +317,11 @@ public class ChopperPlugin extends Plugin {
 
     private boolean isPlayerAnimating() {
         return client.getLocalPlayer().getAnimation() != AnimationID.IDLE;
+    }
+
+    private boolean fullSpecialAttack() {
+        return client.getVar(VarPlayer.SPECIAL_ATTACK_PERCENT) == 1000;
+
     }
 
     private boolean logsAreEmpty() {

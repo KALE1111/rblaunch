@@ -7,5 +7,6 @@ public enum ChopperStates {
     DROPPING_LOGS,
     OPENING_BANK,
     CLOSING_BANK,
-    BANKING_LOGS
+    BANKING_LOGS,
+    USING_SPECIAL_ATTACK
 }
