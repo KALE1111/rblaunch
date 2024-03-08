@@ -27,7 +27,7 @@ public interface ChopperConfig extends Config {
             section = instructionsSection
     )
     default String instructionsText() {
-        return "";
+        return "If you choose to bank, make sure there is a bank nearby. The plugin will look for the nearest tree, so make sure you watch it.";
     }
 
     @ConfigSection(
