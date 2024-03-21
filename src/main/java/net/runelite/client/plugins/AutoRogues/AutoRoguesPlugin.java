@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 
 import static net.runelite.http.api.RuneLiteAPI.GSON;
 
-@PluginDescriptor(name = "\"<html><font color=#86C43F>[JD]</font> Auto Rogues</html>",
+@PluginDescriptor(name = name = "<html><font color=86C43F>[JD]</font> Auto Rogues</html>",
         description = "Auto Rogues by Jarromie",
         enabledByDefault = false,
         tags = {"jarromie","plugin","rogues","den","rogue"})
