@@ -69,13 +69,13 @@ class NightmarePrayerOverlay extends Overlay
 	{
 		Widget widget = null;
 		if(prayer == Prayer.PROTECT_FROM_MAGIC) {
-			widget = client.getWidget(net.runelite.client.plugins.toa.Util.Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+			widget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
 		}
 		else if(prayer == Prayer.PROTECT_FROM_MELEE) {
-			widget = client.getWidget(net.runelite.client.plugins.toa.Util.Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+			widget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
 		}
 		else {
-			widget = client.getWidget(net.runelite.client.plugins.toa.Util.Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+			widget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
 		}
 
 		if (widget == null )

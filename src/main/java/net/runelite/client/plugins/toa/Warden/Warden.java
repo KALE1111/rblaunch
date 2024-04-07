@@ -1,12 +1,13 @@
 package net.runelite.client.plugins.toa.Warden;
 
 import java.util.LinkedHashSet;
+
+import com.example.EthanApiPlugin.Utility.Prayer;
 import net.runelite.api.GraphicsObject;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.client.plugins.toa.Akkha.MemorizingTile;
 import net.runelite.client.plugins.toa.Kephri.KephriDangerTile;
 import net.runelite.client.plugins.toa.ToaConfig;
-import net.runelite.client.plugins.toa.Util.Prayer;
 import net.runelite.client.plugins.toa.Warden.WardenPosition;
 import net.runelite.client.plugins.toa.Prayer.NextAttack;
 import net.runelite.client.plugins.toa.Room;

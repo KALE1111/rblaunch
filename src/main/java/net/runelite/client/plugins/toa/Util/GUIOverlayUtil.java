@@ -1,5 +1,6 @@
 package net.runelite.client.plugins.toa.Util;
 
+import com.example.EthanApiPlugin.Utility.Prayer;
 import com.google.common.base.Strings;
 import java.awt.*;
 import java.awt.image.BufferedImage;

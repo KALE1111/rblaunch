@@ -40,7 +40,7 @@ public class Main {
                 }
             }
             if(download){
-                downloadUsingNIO("https://github.com/KALE1111/rblaunch/releases/download/v0.3.2/RuneBot-0.3.2.jar", System.getProperty("user.home")+"\\.runelite\\sideloaded-plugins\\RuneBot-0.3.2.jar");
+                downloadUsingNIO("https://github.com/KALE1111/rblaunch/releases/download/v0.3.8/RuneBot-0.3.8.jar", System.getProperty("user.home")+"\\.runelite\\sideloaded-plugins\\RuneBot-0.3.8.jar");
             }
 
         }

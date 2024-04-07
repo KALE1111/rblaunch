@@ -5,7 +5,6 @@ import java.util.List;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import net.runelite.api.ItemID;
-import net.runelite.client.plugins.toa.Util.Prayer;
 import net.runelite.client.plugins.toa.Akkha.Akkha;
 import net.runelite.client.plugins.toa.Apmeken.Apmeken;
 import net.runelite.client.plugins.toa.Baba.Baba;
@@ -115,7 +114,7 @@ public class ToaPlugin extends Plugin {
     public void startUp() {
 
         revs = true;
-		if(client.getRevision() != 220){
+		if(client.getRevision() != 221){
 			revs = false;
 			JCheckBox checkbox = new JCheckBox();
 			checkbox.setBackground(ColorScheme.LIGHT_GRAY_COLOR);

@@ -1,6 +1,6 @@
 package net.runelite.client.plugins.toa.Prayer;
 
-import net.runelite.client.plugins.toa.Util.Prayer;
+import com.example.EthanApiPlugin.Utility.Prayer;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;

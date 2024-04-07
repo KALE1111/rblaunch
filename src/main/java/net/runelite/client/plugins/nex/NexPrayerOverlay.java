@@ -57,9 +57,9 @@ class NexPrayerOverlay extends Overlay
 			return null;
 		}
 
-		final Widget meleePrayerWidget = client.getWidget(net.runelite.client.plugins.toa.Util.Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
-		final Widget rangePrayerWidget = client.getWidget(net.runelite.client.plugins.toa.Util.Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
-		final Widget magicPrayerWidget = client.getWidget(net.runelite.client.plugins.toa.Util.Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+		final Widget meleePrayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+		final Widget rangePrayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+		final Widget magicPrayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
 
 
 		var prayerWidgetHidden = meleePrayerWidget == null
@@ -87,13 +87,13 @@ class NexPrayerOverlay extends Overlay
 	{
 		Widget prayerWidget = null;
 		if(prayer == Prayer.PROTECT_FROM_MAGIC) {
-			prayerWidget = client.getWidget(net.runelite.client.plugins.toa.Util.Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+			prayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
 		}
 		else if(prayer == Prayer.PROTECT_FROM_MELEE) {
-			prayerWidget = client.getWidget(net.runelite.client.plugins.toa.Util.Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+			prayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
 		}
 		else {
-			prayerWidget = client.getWidget(net.runelite.client.plugins.toa.Util.Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+			prayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
 		}
 		if (prayerWidget == null)
 		{

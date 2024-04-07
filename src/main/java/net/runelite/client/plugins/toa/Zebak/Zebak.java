@@ -1,7 +1,7 @@
 package net.runelite.client.plugins.toa.Zebak;
 
+import com.example.EthanApiPlugin.Utility.Prayer;
 import net.runelite.client.plugins.toa.ToaConfig;
-import net.runelite.client.plugins.toa.Util.Prayer;
 import net.runelite.client.plugins.toa.Prayer.NextAttack;
 import net.runelite.client.plugins.toa.Room;
 import net.runelite.client.plugins.toa.ToaPlugin;

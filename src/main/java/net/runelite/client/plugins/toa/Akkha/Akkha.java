@@ -1,10 +1,11 @@
 package net.runelite.client.plugins.toa.Akkha;
 
 import net.runelite.client.plugins.toa.Util.AttackStyle;
+import com.example.EthanApiPlugin.Utility.Prayer;
 import net.runelite.client.plugins.toa.ToaConfig;
 import net.runelite.client.plugins.toa.Room;
 import net.runelite.client.plugins.toa.ToaPlugin;
-import net.runelite.client.plugins.toa.Util.Prayer;
+
 import com.google.common.annotations.VisibleForTesting;
 import lombok.Getter;
 import net.runelite.api.*;
@@ -149,7 +150,7 @@ public class Akkha extends Room {
 		}
     }
 
-    private void handlePray(Prayer utilstyle, NPC currNPC, net.runelite.api.Prayer styles)
+    private void handlePray(com.example.EthanApiPlugin.Utility.Prayer utilstyle, NPC currNPC, net.runelite.api.Prayer styles)
 	{
 		if ((packet.packetsInstalled) && (false))//config.warning() && config.AkkhaprayFlick() && plugin.revs))
 		{
