@@ -2,26 +2,17 @@ package net.runelite.client.plugins.toa.Warden;
 
 import java.util.LinkedHashSet;
 
-import com.example.EthanApiPlugin.Utility.Prayer;
-import net.runelite.api.GraphicsObject;
-import net.runelite.api.events.GameObjectSpawned;
-import net.runelite.client.plugins.toa.Akkha.MemorizingTile;
-import net.runelite.client.plugins.toa.Kephri.KephriDangerTile;
+import com.example.InteractionApi.PrayerInteraction;
+import net.runelite.api.*;
 import net.runelite.client.plugins.toa.ToaConfig;
-import net.runelite.client.plugins.toa.Warden.WardenPosition;
 import net.runelite.client.plugins.toa.Prayer.NextAttack;
 import net.runelite.client.plugins.toa.Room;
 import net.runelite.client.plugins.toa.ToaPlugin;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
-import net.runelite.api.GameObject;
-import net.runelite.api.NPC;
-import net.runelite.api.Projectile;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicsObjectCreated;
-import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.eventbus.Subscribe;
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -29,7 +20,6 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import net.runelite.client.plugins.toa.reflectMeth;
-import net.runelite.client.plugins.toa.reflectPackMeth;
 import com.example.Packets.MousePackets;
 import com.example.Packets.WidgetPackets;
 
@@ -214,57 +204,45 @@ public class Warden extends Room {
 				if (attack.getTicksUntil() <= config.tickstowait() && !client.isPrayerActive(attack.getPrayer().getApiPrayer())&& client.getLocalPlayer().getAnimation() != 5538)
 				{// if 2t till next attack and not prayer correctly
 					String str = "";
-					if (attack.getPrayer() == Prayer.PROTECT_FROM_MELEE)
+					if (attack.getPrayer() == com.example.RuneBotApi.Prayer.PROTECT_FROM_MELEE)
 					{
-						str = attack.getPrayer().getApiPrayer().name();
+						str = attack.getPrayer().name();
 						lastattack = attack;
-						MousePackets.queueClickPacket();
-						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId(),-1,-1);
-						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+						PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MELEE);
 					}
-					if (attack.getPrayer() == Prayer.PROTECT_FROM_MAGIC)
+					if (attack.getPrayer() == com.example.RuneBotApi.Prayer.PROTECT_FROM_MAGIC)
 					{
-						str = attack.getPrayer().getApiPrayer().name();
+						str = attack.getPrayer().name();
 						lastattack = attack;
-						MousePackets.queueClickPacket();
-						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId(),-1,-1);
-						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+						PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MAGIC);
 
 					}
-					if (attack.getPrayer() == Prayer.PROTECT_FROM_MISSILES)
+					if (attack.getPrayer() == com.example.RuneBotApi.Prayer.PROTECT_FROM_MISSILES)
 					{
-						str = attack.getPrayer().getApiPrayer().name();
+						str = attack.getPrayer().name();
 						lastattack = attack;
-						MousePackets.queueClickPacket();
-						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId(),-1,-1);
-						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+						PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MISSILES);
 					}
 					log.info(str);
 				}
 				else if ((attack.getTicksUntil() > config.tickstowait() && client.isPrayerActive(lastattack.getPrayer().getApiPrayer())) && config.flickPrayer())
 				{//turns prayer off for flicking
 					String str = "";
-					if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MELEE)
+					if (lastattack.getPrayer() == com.example.RuneBotApi.Prayer.PROTECT_FROM_MELEE)
 					{
-						str = attack.getPrayer().getApiPrayer().name();
-						MousePackets.queueClickPacket();
-						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId(),-1,-1);
-						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+						str = attack.getPrayer().name();
+						PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MELEE);
 					}
-					if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MAGIC)
+					if (lastattack.getPrayer() == com.example.RuneBotApi.Prayer.PROTECT_FROM_MAGIC)
 					{
-						str = attack.getPrayer().getApiPrayer().name();
-						MousePackets.queueClickPacket();
-						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId(),-1,-1);
-						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+						str = attack.getPrayer().name();
+						PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MAGIC);
 
 					}
-					if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MISSILES)
+					if (lastattack.getPrayer() == com.example.RuneBotApi.Prayer.PROTECT_FROM_MISSILES)
 					{
-						str = attack.getPrayer().getApiPrayer().name();
-						MousePackets.queueClickPacket();
-						WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId(),-1,-1);
-						//packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+						str = attack.getPrayer().name();
+						PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MISSILES);
 					}
 					log.info(str);
 				}
@@ -312,11 +290,11 @@ public class Warden extends Room {
 						switch(p.getId()){
 							case 2177:
 							case 2176:
-								nextAttackQueue.add(new NextAttack(7, Prayer.PROTECT_FROM_MAGIC, 1 ));
+								nextAttackQueue.add(new NextAttack(7, com.example.RuneBotApi.Prayer.PROTECT_FROM_MAGIC, 1 ));
 								break;
 							case 2179:
 							case 2178:
-								nextAttackQueue.add(new NextAttack(7, Prayer.PROTECT_FROM_MISSILES, 1 ));
+								nextAttackQueue.add(new NextAttack(7, com.example.RuneBotApi.Prayer.PROTECT_FROM_MISSILES, 1 ));
 								break;
 						}
 					}
@@ -366,14 +344,14 @@ public class Warden extends Room {
 							case 2204://special melee
 								if (p.getRemainingCycles() > 110)
 								{
-									nextAttackQueue.add(new NextAttack(4, Prayer.PROTECT_FROM_MELEE, 1));
+									nextAttackQueue.add(new NextAttack(4, com.example.RuneBotApi.Prayer.PROTECT_FROM_MELEE, 1));
 								}
 								break;
 							case 2206://special range
 								if (p.getRemainingCycles() > 110)
 								{
 									//log.info("added special {}", p.getRemainingCycles());
-									nextAttackQueue.add(new NextAttack(4, Prayer.PROTECT_FROM_MISSILES, 1));
+									nextAttackQueue.add(new NextAttack(4, com.example.RuneBotApi.Prayer.PROTECT_FROM_MISSILES, 1));
 								}
 
 								break;
@@ -381,15 +359,15 @@ public class Warden extends Room {
 								if (p.getRemainingCycles() > 110)
 								{
 									//log.info("added special {}", p.getRemainingCycles());
-									nextAttackQueue.add(new NextAttack(4, Prayer.PROTECT_FROM_MAGIC, 1));
+									nextAttackQueue.add(new NextAttack(4, com.example.RuneBotApi.Prayer.PROTECT_FROM_MAGIC, 1));
 								}
 
 								break;
 							case 2224://normal mage
-								nextAttackQueue.add(new NextAttack(3, Prayer.PROTECT_FROM_MAGIC, 1));
+								nextAttackQueue.add(new NextAttack(3, com.example.RuneBotApi.Prayer.PROTECT_FROM_MAGIC, 1));
 								break;
 							case 2241://normal range
-								nextAttackQueue.add(new NextAttack(3, Prayer.PROTECT_FROM_MISSILES, 1));
+								nextAttackQueue.add(new NextAttack(3, com.example.RuneBotApi.Prayer.PROTECT_FROM_MISSILES, 1));
 								break;
 						}
 					}

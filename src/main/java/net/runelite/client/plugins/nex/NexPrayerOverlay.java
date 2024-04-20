@@ -6,9 +6,10 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import com.example.RuneBotApi.Prayer;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import net.runelite.api.Prayer;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -50,16 +51,16 @@ class NexPrayerOverlay extends Overlay
 			return null;
 		}
 
-		var prayer = NexPhase.phasePrayer(plugin.getCurrentPhase(), client.getLocalPlayer(), plugin.getNex(), plugin.isTrappedInIce());
+		Prayer prayer = NexPhase.phasePrayer(plugin.getCurrentPhase(), client.getLocalPlayer(), plugin.getNex(), plugin.isTrappedInIce());
 
 		if (prayer == null)
 		{
 			return null;
 		}
 
-		final Widget meleePrayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
-		final Widget rangePrayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
-		final Widget magicPrayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+		final Widget meleePrayerWidget = client.getWidget(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+		final Widget rangePrayerWidget = client.getWidget(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+		final Widget magicPrayerWidget = client.getWidget(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
 
 
 		var prayerWidgetHidden = meleePrayerWidget == null
@@ -72,11 +73,11 @@ class NexPrayerOverlay extends Overlay
 
 		if (!prayerWidgetHidden || config.alwaysShowPrayerHelper())
 		{
-			if (client.isPrayerActive(prayer) && !config.indicatePrayerIsCorrect())
+			if (client.isPrayerActive(prayer.getApiPrayer()) && !config.indicatePrayerIsCorrect())
 			{
 				return null;
 			}
-			Color color = client.isPrayerActive(prayer) ? Color.GREEN : Color.RED;
+			Color color = client.isPrayerActive(prayer.getApiPrayer()) ? Color.GREEN : Color.RED;
 			renderPrayerOverlay(graphics, client, prayer, color);
 		}
 
@@ -87,13 +88,13 @@ class NexPrayerOverlay extends Overlay
 	{
 		Widget prayerWidget = null;
 		if(prayer == Prayer.PROTECT_FROM_MAGIC) {
-			prayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+			prayerWidget = client.getWidget(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
 		}
 		else if(prayer == Prayer.PROTECT_FROM_MELEE) {
-			prayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+			prayerWidget = client.getWidget(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
 		}
 		else {
-			prayerWidget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+			prayerWidget = client.getWidget(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
 		}
 		if (prayerWidget == null)
 		{

@@ -3,7 +3,6 @@ package net.runelite.client.plugins.ocarial;
 import com.example.EthanApiPlugin.Collections.NPCs;
 import com.example.EthanApiPlugin.EthanApiPlugin;
 import com.example.Packets.MousePackets;
-import com.example.RuneBotApi.SpecialMenuOptionClicked;
 import com.google.inject.Inject;
 import net.runelite.api.*;
 import net.runelite.api.events.ClientTick;
@@ -11,14 +10,11 @@ import net.runelite.api.events.MenuOptionClicked;
 
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
-import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 @PluginDescriptor(
@@ -36,17 +32,17 @@ public class OneClickAerialFishingPlugin extends Plugin {
     @Inject
     private Client client;
 
-    private SpecialMenuOptionClicked currEntry;
+    private MenuEntry menuEntry;
 
     @Subscribe
     public void onMenuOptionClicked(MenuOptionClicked event)
     {
         if(event.getMenuOption().equals("<col=00ff00>One Click Aerial Fishing"))
         {
-            currEntry = new SpecialMenuOptionClicked(event.getMenuEntry());
-            handleClick(currEntry);
-            if(!currEntry.getMenuOption().equals("Handled")) {
-                EthanApiPlugin.invoke(currEntry.getParam0(), currEntry.getParam1(), currEntry.getMenuAction().getId(), currEntry.getId(), currEntry.getItemId(), currEntry.getMenuOption(), currEntry.getMenuTarget(), 0, 0);
+            menuEntry = event.getMenuEntry();
+            handleClick(menuEntry);
+            if(!menuEntry.getOption().equals("Handled")) {
+                EthanApiPlugin.invoke(menuEntry.getParam0(), menuEntry.getParam1(), menuEntry.getType().getId(), menuEntry.getIdentifier(), menuEntry.getItemId(), menuEntry.getOption(), menuEntry.getTarget(), 0, 0);
             }
             event.consume();
         }
@@ -77,13 +73,13 @@ public class OneClickAerialFishingPlugin extends Plugin {
         client.setMenuEntries(list);
     }
 
-    private void handleClick(SpecialMenuOptionClicked event)
+    private void handleClick(MenuEntry event)
     {
         if (getEmptySlots()>0
                 && ((getLastInventoryItem(ItemID.KING_WORM)!=null)||(getLastInventoryItem(ItemID.FISH_CHUNKS)!=null)) //if bait exists
                 && !shouldCut)
         {
-            event.setMenuEntry(catchFishMenuEntry());
+            setMenuEntry(catchFishMenuEntry());
             return;
         }
         else
@@ -100,7 +96,7 @@ public class OneClickAerialFishingPlugin extends Plugin {
                 {
                     MenuEntry next = createMenuEntry(0,MenuAction.WIDGET_TYPE_1,0,0,false);
                     next.setOption("Handled");
-                    event.setMenuEntry(next);
+                    setMenuEntry(next);
                     //MousePackets.queueClickPacket();
                     Widget dropitem = getLastInventoryItem(fish);
                     EthanApiPlugin.invoke(dropitem.getIndex(),9764864,1007,7,dropitem.getItemId(),"Drop",dropitem.getName(),0,0);
@@ -109,7 +105,7 @@ public class OneClickAerialFishingPlugin extends Plugin {
 
                 MenuEntry next = createMenuEntry(0,MenuAction.WIDGET_TYPE_1,0,0,false);
                 next.setOption("Handled");
-                event.setMenuEntry(next);
+                setMenuEntry(next);
 
                 Widget knife = getLastInventoryItem(ItemID.KNIFE);
                 //MousePackets.queueClickPacket();//Should change this to uh shadowclicks probs cba
@@ -122,6 +118,16 @@ public class OneClickAerialFishingPlugin extends Plugin {
             }
         }
         shouldCut=false;
+    }
+
+    private void setMenuEntry(MenuEntry entry)
+    {
+        entry.setOption(entry.getOption());
+        entry.setTarget(entry.getTarget());
+        entry.setIdentifier(entry.getIdentifier());
+        entry.setIdentifier(entry.getType().getId());
+        entry.setParam0(entry.getParam0());
+        entry.setParam1(entry.getParam1());
     }
 
     private Widget getLastInventoryItem(int id) {

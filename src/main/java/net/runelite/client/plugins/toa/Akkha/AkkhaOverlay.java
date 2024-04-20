@@ -99,7 +99,7 @@ public class AkkhaOverlay extends RoomOverlay {
             return;
         }
 
-        if (client.isPrayerActive(attackStyle.getPrayer().getApiPrayer()))
+        if (client.isPrayerActive(attackStyle.getPrayer()))
         {
             return;
         }

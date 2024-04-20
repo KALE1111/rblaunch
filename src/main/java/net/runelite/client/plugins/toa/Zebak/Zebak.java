@@ -1,6 +1,7 @@
 package net.runelite.client.plugins.toa.Zebak;
 
-import com.example.EthanApiPlugin.Utility.Prayer;
+import com.example.InteractionApi.PrayerInteraction;
+import net.runelite.api.*;
 import net.runelite.client.plugins.toa.ToaConfig;
 import net.runelite.client.plugins.toa.Prayer.NextAttack;
 import net.runelite.client.plugins.toa.Room;
@@ -8,10 +9,6 @@ import net.runelite.client.plugins.toa.ToaPlugin;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
-import net.runelite.api.GameObject;
-import net.runelite.api.NPC;
-import net.runelite.api.Projectile;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GraphicsObjectCreated;
 import net.runelite.api.events.VarbitChanged;
@@ -131,57 +128,44 @@ public class Zebak extends Room {
                 if ((attack.getTicksUntil() <= config.tickstowait() && !client.isPrayerActive(attack.getPrayer().getApiPrayer())) && client.getLocalPlayer().getAnimation() != 5538)
                 {// if 2t till next attack and not prayer correctly
                     String str = "";
-                    if (attack.getPrayer() == Prayer.PROTECT_FROM_MELEE)
+                    if (attack.getPrayer().getApiPrayer() == Prayer.PROTECT_FROM_MELEE)
                     {
-                        str = attack.getPrayer().getApiPrayer().name();
+                        str = attack.getPrayer().name();
                         lastattack = attack;
-                        MousePackets.queueClickPacket();
-                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId(),-1,-1);
-                        //packet.toggleNormalPrayer();
+                        PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MELEE);
                     }
-                    if (attack.getPrayer() == Prayer.PROTECT_FROM_MAGIC)
+                    if (attack.getPrayer().getApiPrayer() == Prayer.PROTECT_FROM_MAGIC)
                     {
-                        str = attack.getPrayer().getApiPrayer().name();
+                        str = attack.getPrayer().name();
                         lastattack = attack;
-                        MousePackets.queueClickPacket();
-                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId(),-1,-1);
-                        //packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
-
+                        PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MAGIC);
                     }
-                    if (attack.getPrayer() == Prayer.PROTECT_FROM_MISSILES)
+                    if (attack.getPrayer().getApiPrayer() == Prayer.PROTECT_FROM_MISSILES)
                     {
-                        str = attack.getPrayer().getApiPrayer().name();
+                        str = attack.getPrayer().name();
                         lastattack = attack;
-                        MousePackets.queueClickPacket();
-                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId(),-1,-1);
-                        //packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+                        PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MISSILES);
                     }
                     log.info(str);
                 }
                 else if ((attack.getTicksUntil() > config.tickstowait() && client.isPrayerActive(lastattack.getPrayer().getApiPrayer()))&& config.flickPrayer())
                 {//turns prayer off for flicking
                     String str = "";
-                    if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MELEE)
+                    if (lastattack.getPrayer().getApiPrayer() == Prayer.PROTECT_FROM_MELEE)
                     {
-                        str = attack.getPrayer().getApiPrayer().name();
-                        MousePackets.queueClickPacket();
-                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId(),-1,-1);
-                        //packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+                        str = attack.getPrayer().name();
+                        PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MELEE);
                     }
-                    if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MAGIC)
+                    if (lastattack.getPrayer().getApiPrayer() == Prayer.PROTECT_FROM_MAGIC)
                     {
-                        str = attack.getPrayer().getApiPrayer().name();
-                        MousePackets.queueClickPacket();
-                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId(),-1,-1);
-                        //packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+                        str = attack.getPrayer().name();
+                        PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MAGIC);
 
                     }
-                    if (lastattack.getPrayer() == Prayer.PROTECT_FROM_MISSILES)
+                    if (lastattack.getPrayer().getApiPrayer() == Prayer.PROTECT_FROM_MISSILES)
                     {
-                        str = attack.getPrayer().getApiPrayer().name();
-                        MousePackets.queueClickPacket();
-                        WidgetPackets.queueWidgetActionPacket(1,Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId(),-1,-1);
-                        //packet.toggleNormalPrayer(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+                        str = attack.getPrayer().name();
+                        PrayerInteraction.flickPrayers(Prayer.PROTECT_FROM_MISSILES);
                     }
                     log.info(str);
                 }
@@ -209,7 +193,7 @@ public class Zebak extends Room {
     @Subscribe
     public void onGraphicsObjectCreated(GraphicsObjectCreated graphicsObjectC) {
         if (graphicsObjectC.getGraphicsObject().getId() == ZEBAK_BLOOD_BARRAGE && zebakActive){
-            nextAttackQueue.add(new NextAttack(4, Prayer.PROTECT_FROM_MAGIC, 2));
+            nextAttackQueue.add(new NextAttack(4, com.example.RuneBotApi.Prayer.PROTECT_FROM_MAGIC, 2));
         }
     }
 
@@ -244,12 +228,12 @@ public class Zebak extends Room {
                     switch(p.getId()){
                         case MAGIC_ATTACK_P1:
                         case MAGIC_ATTACK_P1_QUICK:
-                            nextAttackQueue.add(new NextAttack(7, Prayer.PROTECT_FROM_MAGIC, 1 ));
+                            nextAttackQueue.add(new NextAttack(7, com.example.RuneBotApi.Prayer.PROTECT_FROM_MAGIC, 1 ));
                             canAttackTicks = tickInterval;
                             break;
                         case RANGED_ATTACK_P1:
                         case RANGED_ATTACK_P1_QUICK:
-                            nextAttackQueue.add(new NextAttack(7, Prayer.PROTECT_FROM_MISSILES, 1 ));
+                            nextAttackQueue.add(new NextAttack(7, com.example.RuneBotApi.Prayer.PROTECT_FROM_MISSILES, 1 ));
                             canAttackTicks = tickInterval;
                             break;
                     }

@@ -63,8 +63,8 @@ public class NexPrayerInfoBox extends Overlay
 		}
 
 		BufferedImage prayerImage;
-		prayerImage = getPrayerImage(prayer);
-		imagePanelComponent.setBackgroundColor(client.isPrayerActive(prayer) ? ComponentConstants.STANDARD_BACKGROUND_COLOR : NOT_ACTIVATED_BACKGROUND_COLOR);
+		prayerImage = getPrayerImage(prayer.getApiPrayer());
+		imagePanelComponent.setBackgroundColor(client.isPrayerActive(prayer.getApiPrayer()) ? ComponentConstants.STANDARD_BACKGROUND_COLOR : NOT_ACTIVATED_BACKGROUND_COLOR);
 
 		imagePanelComponent.getChildren().add(new ImageComponent(prayerImage));
 		return imagePanelComponent.render(graphics);

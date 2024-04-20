@@ -79,7 +79,6 @@ public class VolcanicAshPlugin extends Plugin {
         handleRunEnergy();
 
         if (Inventory.search().nameContains("pickaxe").first().isPresent() || Equipment.search().nameContains("pickaxe").first().isPresent()) {
-            Equipment.RetryCollection();
             if (!isMining() && !isPlayerAnimating() && !EthanApiPlugin.isMoving()) {
                 TileObjects.search().withId(30985).nearestToPlayer().ifPresent(ash -> {
                     TileObjectInteraction.interact(ash, "Mine");

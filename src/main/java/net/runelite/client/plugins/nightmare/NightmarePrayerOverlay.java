@@ -8,9 +8,9 @@ import java.awt.Rectangle;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.example.RuneBotApi.Prayer;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import net.runelite.api.Prayer;
 
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.ui.overlay.Overlay;
@@ -59,7 +59,7 @@ class NightmarePrayerOverlay extends Overlay
 			return null;
 		}
 
-		Color color = client.isPrayerActive(attack.getPrayer()) ? Color.GREEN : Color.RED;
+		Color color = client.isPrayerActive(attack.getPrayer().getApiPrayer()) ? Color.GREEN : Color.RED;
 		renderPrayerOverlay(graphics, client, attack.getPrayer(), color);
 
 		return null;
@@ -69,13 +69,13 @@ class NightmarePrayerOverlay extends Overlay
 	{
 		Widget widget = null;
 		if(prayer == Prayer.PROTECT_FROM_MAGIC) {
-			widget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
+			widget = client.getWidget(Prayer.PROTECT_FROM_MAGIC.getWidgetInfo().getPackedId());
 		}
 		else if(prayer == Prayer.PROTECT_FROM_MELEE) {
-			widget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
+			widget = client.getWidget(Prayer.PROTECT_FROM_MELEE.getWidgetInfo().getPackedId());
 		}
 		else {
-			widget = client.getWidget(com.example.EthanApiPlugin.Utility.Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
+			widget = client.getWidget(Prayer.PROTECT_FROM_MISSILES.getWidgetInfo().getPackedId());
 		}
 
 		if (widget == null )

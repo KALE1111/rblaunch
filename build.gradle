@@ -10,13 +10,13 @@ repositories {
 
         url = 'https://maven.pkg.github.com/SkylerPIlot/RBEVPmvn'
         credentials {
-            username = "SkylerPIlot"
-            password = "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"
+            username = "DBloodworth95"
+            password = ""
         }
     }
     mavenCentral()
 }
-def runeLiteVersion = '1.10.10.2'
+def runeLiteVersion = '1.10.23.1'
 
 dependencies {
     compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
@@ -28,10 +28,35 @@ dependencies {
     implementation 'org.json:json:20230227'
 
     implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
+    implementation 'org.roaringbitmap:RoaringBitmap:0.9.44'
+    implementation("org.benf:cfr:0.152")
+    implementation(group: "org.java-websocket", name: "Java-WebSocket", version: "1.5.2")
 
-    compileOnly group: 'com.example', name: 'rbapi', version: '0.2.1+'
-    runtimeOnly group: 'com.example', name: 'rbapi', version: '0.2.1+'
-    testImplementation group: 'com.example', name: 'rbapi', version: '0.2.1+'
+    compileOnly group: 'com.example', name: 'rbapi', version: '1.7.8'
+
+    runtimeOnly group: 'com.example', name: 'rbapi', version: '1.7.8'
+    testImplementation group: 'com.example', name: 'rbapi', version: '0.7.2'
+
+
+    //runtimeOnly 'org.bytedeco:javacv-platform:1.5.5'
+
+    // https://mvnrepository.com/artifact/org.mozilla/javascript
+    compileOnly group: 'org.mozilla', name: 'rhino', version: '1.7.14'
+
+// https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea
+    compileOnly group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.3.4'
+// https://mvnrepository.com/artifact/org.mozilla/rhino
+    //runtimeOnly group: 'org.mozilla', name: 'rhino', version: '1.7.14'
+
+// https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea
+    //
+    // runtimeOnly group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.3.4'
+    // https://mvnrepository.com/artifact/org.mozilla/javascript
+    testImplementation group: 'org.mozilla', name: 'rhino', version: '1.7.14'
+
+// https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea
+    testImplementation group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.3.4'
 }
 sourceSets {
 
@@ -46,7 +71,7 @@ sourceSets {
 }
 
 group = 'net.runelite.client.plugins'
-version = '0.2.3'
+version = '1.4.10'
 sourceCompatibility = "11"
 
 publishing {
@@ -58,10 +83,10 @@ publishing {
     repositories {
         maven {
             credentials {
-                username 'admin'
-                password 'password'
+                username 'DBloodworth95'
+                password ''
             }
-            url "http://baseUrl/artifactory/libs-release-local"
+            url "https://maven.pkg.github.com/SkylerPIlot/RBEVPmvn"
         }
     }
 }

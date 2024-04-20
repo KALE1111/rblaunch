@@ -1,16 +1,13 @@
 package net.runelite.client.plugins.toa.Util;
 
-import com.example.EthanApiPlugin.Utility.Prayer;
 import com.google.common.base.Strings;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.Client;
-import net.runelite.api.Perspective;
+import net.runelite.api.*;
 import net.runelite.api.Point;
-import net.runelite.api.VarClientInt;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
@@ -23,20 +20,6 @@ import javax.annotation.Nullable;
 public class GUIOverlayUtil
 {
     private static final int MAX_DRAW_DISTANCE = 32;
-
-    public static Rectangle renderPrayerOverlay(Graphics2D graphics, Client client, Prayer prayer, Color color)
-    {
-        Widget widget = client.getWidget(prayer.getWidgetInfo().getPackedId());
-
-        if (widget == null || client.getVarcIntValue(VarClientInt.INVENTORY_TAB) != InterfaceTab.PRAYER.getId())
-        {
-            return null;
-        }
-
-        Rectangle bounds = widget.getBounds();
-        OverlayUtil.renderPolygon(graphics, rectangleToPolygon(bounds), color);
-        return bounds;
-    }
 
     private static Polygon rectangleToPolygon(Rectangle rect)
     {

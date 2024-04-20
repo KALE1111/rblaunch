@@ -8,8 +8,7 @@ import static net.runelite.api.NpcID.FUMUS;
 import static net.runelite.api.NpcID.GLACIES;
 import static net.runelite.api.NpcID.UMBRA;
 import net.runelite.api.Player;
-import net.runelite.api.Prayer;
-
+import com.example.RuneBotApi.Prayer;
 public enum NexPhase
 {
 	NONE,

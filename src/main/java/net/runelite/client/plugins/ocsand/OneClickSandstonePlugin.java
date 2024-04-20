@@ -26,7 +26,6 @@
 package net.runelite.client.plugins.ocsand;
 
 import java.util.*;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import com.example.EthanApiPlugin.Collections.TileObjects;
@@ -40,14 +39,10 @@ import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
-import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.util.GameEventManager;
-import com.example.RuneBotApi.SpecialMenuOptionClicked;
 
 
 @PluginDescriptor(
@@ -60,11 +55,10 @@ public class OneClickSandstonePlugin extends Plugin {
     @Inject
     private Client client;
 
-    private SpecialMenuOptionClicked currEntry;
-
     @Inject
     private OneClickSandstoneConfig config;
 
+    private MenuEntry menuEntry;
 
 
     @Provides
@@ -76,9 +70,9 @@ public class OneClickSandstonePlugin extends Plugin {
     @Subscribe
     public void onMenuOptionClicked(MenuOptionClicked event) {
         if (event.getMenuOption().equals("<col=00ff00>One Click Sandstone")) {
-            currEntry = new SpecialMenuOptionClicked(event.getMenuEntry());
-            handleClick(currEntry);
-            EthanApiPlugin.invoke(currEntry.getParam0(), currEntry.getParam1(), currEntry.getMenuAction().getId(), currEntry.getId(), currEntry.getItemId(), currEntry.getMenuOption(), currEntry.getMenuTarget(), 0, 0);
+            menuEntry = event.getMenuEntry();
+            handleClick(menuEntry);
+            EthanApiPlugin.invoke(menuEntry.getParam0(), menuEntry.getParam1(), menuEntry.getType().getId(), menuEntry.getIdentifier(), menuEntry.getItemId(), menuEntry.getOption(), menuEntry.getTarget(), 0, 0);
             event.consume();
         }
 
@@ -110,28 +104,30 @@ public class OneClickSandstonePlugin extends Plugin {
 
     }
 
-    private void handleClick(SpecialMenuOptionClicked event) {
-        if(EthanApiPlugin.isMoving()
-                ||client.getLocalPlayer().getPoseAnimation()
-                != client.getLocalPlayer().getIdlePoseAnimation()
-                || client.getLocalPlayer().getAnimation() == AnimationID.MINING_RUNE_PICKAXE
-                || client.getLocalPlayer().getAnimation() == AnimationID.MINING_DRAGON_PICKAXE)
-        {
-            event.consume();
-        }
+    private void handleClick(MenuEntry event) {
         if (getEmptySlots() == 0)
         {
-            event.setMenuEntry(depositGrinderMenuEntry());
+            setMenuEntry(depositGrinderMenuEntry());
             return;
         }
 
         if (shouldCastHumidify())
         {
-            event.setMenuEntry(createHumidifyMenuEntry());
+            setMenuEntry(createHumidifyMenuEntry());
             return;
         }
-        event.setMenuEntry(mineSandStone());
+        setMenuEntry(mineSandStone());
 
+    }
+
+    private void setMenuEntry(MenuEntry entry)
+    {
+        entry.setOption(entry.getOption());
+        entry.setTarget(entry.getTarget());
+        entry.setIdentifier(entry.getIdentifier());
+        entry.setIdentifier(entry.getType().getId());
+        entry.setParam0(entry.getParam0());
+        entry.setParam1(entry.getParam1());
     }
 
     private Point getLocation(TileObject tileObject) {

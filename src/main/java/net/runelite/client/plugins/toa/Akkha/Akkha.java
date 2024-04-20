@@ -1,7 +1,6 @@
 package net.runelite.client.plugins.toa.Akkha;
 
-import net.runelite.client.plugins.toa.Util.AttackStyle;
-import com.example.EthanApiPlugin.Utility.Prayer;
+import com.example.InteractionApi.PrayerInteraction;
 import net.runelite.client.plugins.toa.ToaConfig;
 import net.runelite.client.plugins.toa.Room;
 import net.runelite.client.plugins.toa.ToaPlugin;
@@ -150,7 +149,7 @@ public class Akkha extends Room {
 		}
     }
 
-    private void handlePray(com.example.EthanApiPlugin.Utility.Prayer utilstyle, NPC currNPC, net.runelite.api.Prayer styles)
+    private void handlePray(Prayer utilstyle, NPC currNPC, net.runelite.api.Prayer styles)
 	{
 		if ((packet.packetsInstalled) && (false))//config.warning() && config.AkkhaprayFlick() && plugin.revs))
 		{
@@ -158,12 +157,12 @@ public class Akkha extends Room {
 			{
 				if (!client.isPrayerActive(styles) && AkkhaTicks <= 2)
 				{
-					packet.toggleNormalPrayer(utilstyle.getWidgetInfo().getPackedId());
+                    PrayerInteraction.flickPrayers(utilstyle);
 					//currentPray = style;
 				}
 				else if (AkkhaTicks >= 2 && client.isPrayerActive(styles) && AkkhaTicks < 6)
 				{
-					packet.toggleNormalPrayer(utilstyle.getWidgetInfo().getPackedId());
+                    PrayerInteraction.flickPrayers(utilstyle);
 				}
 			}
 			else
@@ -193,12 +192,12 @@ public class Akkha extends Room {
 	private void handlePray(Prayer style, net.runelite.api.Prayer styles){
 		if (!client.isPrayerActive(styles) && AkkhaTicks <= 0 )
 		{
-			packet.toggleNormalPrayer(style.getWidgetInfo().getPackedId());
+            PrayerInteraction.flickPrayers(style);
 			//currentPray = style;
 		}
 		else if (AkkhaTicks >= 0 && client.isPrayerActive(styles) && AkkhaTicks < 5)
 		{
-			packet.toggleNormalPrayer(style.getWidgetInfo().getPackedId());
+            PrayerInteraction.flickPrayers(style);
 		}
 	}
 

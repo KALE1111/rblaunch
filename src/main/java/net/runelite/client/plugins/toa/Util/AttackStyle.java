@@ -1,8 +1,8 @@
 package net.runelite.client.plugins.toa.Util;
 
-import com.example.EthanApiPlugin.Utility.Prayer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.runelite.api.Prayer;
 
 import java.awt.*;
 

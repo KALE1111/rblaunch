@@ -265,7 +265,7 @@ public class ChopperPlugin extends Plugin {
 
     private void handleBanking() {
         if (Bank.isOpen()) {
-            BankInventory.search().nameContainsInsensitive("logs").first().ifPresent(item -> {
+            BankInventory.search().nameContains("logs").first().ifPresent(item -> {
                 BankInteraction.useItem(item, "Deposit-All");
             });
             BankInventory.search().nameContains("Bird nest").first().ifPresent(item -> {

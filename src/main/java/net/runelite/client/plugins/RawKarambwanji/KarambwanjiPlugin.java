@@ -57,7 +57,6 @@ public class KarambwanjiPlugin extends Plugin {
             timeout--;
             return;
         }
-        Inventory.reloadInventory();
         if (Inventory.search().withId(ItemID.SMALL_FISHING_NET).first().isPresent() && !client.getLocalPlayer().isInteracting())
         {
             NPCs.search().withName("Fishing spot").first().ifPresent(npc -> {
